@@ -4,11 +4,12 @@ import agh.ics.oop.model.enums.BehaviourType;
 import agh.ics.oop.model.enums.MapType;
 
 public class Configuration {
-    public int width = 0;
-    public int height = 0;
+    public int width = 10;
+    public int height = 10;
     public int energyPerPlant = 0;
-    public int startPlantAmount = 0;
-    public int startAnimalAmount = 0;
+    public int startPlantAmount = 5;
+    public int plantsPerDay = 2;
+    public int startAnimalAmount = 3;
     public int startAnimalEnergy = 0;
     public int minimalReproductionEnergy = 0;
     public int reproductionEnergyCost = 0;
@@ -18,7 +19,59 @@ public class Configuration {
     public BehaviourType animalBehaviourType = BehaviourType.NORMAL;
     public int genotypeSize = 10;
 
+    public int getPlantsPerDay() {
+        return plantsPerDay;
+    }
+
     public int getGenotypeSize() {
         return genotypeSize;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getEnergyPerPlant() {
+        return energyPerPlant;
+    }
+
+    public int getStartPlantAmount() {
+        return startPlantAmount;
+    }
+
+    public int getStartAnimalAmount() {
+        return startAnimalAmount;
+    }
+
+    public int getStartAnimalEnergy() {
+        return startAnimalEnergy;
+    }
+
+    public int getMinimalReproductionEnergy() {
+        return minimalReproductionEnergy;
+    }
+
+    public int getReproductionEnergyCost() {
+        return reproductionEnergyCost;
+    }
+
+    public int getMinimalMutationAmount() {
+        return minimalMutationAmount;
+    }
+
+    public int getMaximumMutationAmount() {
+        return maximumMutationAmount;
+    }
+
+    public MapType getMapType() {
+        return mapType;
+    }
+
+    public BehaviourType getAnimalBehaviourType() {
+        return animalBehaviourType;
     }
 }

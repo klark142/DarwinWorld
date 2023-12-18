@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Genotype;
+import agh.ics.oop.model.*;
+
+import java.util.List;
 
 public class World {
     public static void main(String[] args) {
@@ -15,6 +17,25 @@ public class World {
         Genotype genotype_child = genotype_first.crossGenotypes(genotype_second,
                 10, 20);
         System.out.println(genotype_child);
+
+        Configuration configuration = new Configuration();
+
+        // place animals on the map
+        WorldMap worldMap = new WorldMap(configuration);
+        System.out.println(worldMap);
+        ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
+        worldMap.registerMapChangeListener(consoleMapDisplay);
+        worldMap.placeRandomAnimals(2);
+
+        // move by one day
+        worldMap.move();
+        worldMap.move();
+        worldMap.move();
+        for (List<Animal> animalList : worldMap.getAnimals().values()) {
+            for (Animal animal : animalList) {
+                System.out.println(animal.getGenotype());
+            }
+        }
 
 
     }
