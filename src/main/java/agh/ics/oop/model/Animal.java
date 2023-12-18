@@ -2,7 +2,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.enums.MapDirection;
 
-public class Animal {
+public class Animal implements WorldElement {
     private Vector2d position;
     private MapDirection animalDirection;
 
@@ -23,6 +23,7 @@ public class Animal {
     public Genotype getGenotype() {
         return genotype;
     }
+
     public MapDirection getAnimalDirection() {
         return this.animalDirection;
     }
