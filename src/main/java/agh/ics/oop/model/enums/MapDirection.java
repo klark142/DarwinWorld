@@ -2,6 +2,9 @@ package agh.ics.oop.model.enums;
 
 import agh.ics.oop.model.Vector2d;
 
+import java.util.Map;
+import java.util.Random;
+
 public enum MapDirection {
     NORTH,
     NORTH_EAST,
@@ -56,5 +59,18 @@ public enum MapDirection {
         }
 
         return values()[(this.ordinal() + gene_number) % values().length];
+    }
+
+    public static MapDirection getNextDirection(MapDirection currentDirection, int gene) {
+        return values()[(currentDirection.ordinal() + gene) % values().length];
+    }
+
+    public static MapDirection getRandomDirection() {
+        Random random = new Random();
+        return values()[random.nextInt(values().length)];
+    }
+
+    public static MapDirection getOpposite(MapDirection mapDirection) {
+        return values()[(mapDirection.ordinal() + 4) % 8];
     }
 }

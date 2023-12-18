@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class LifegivingCorpse extends EquatorPrefered {
-    public LifegivingCorpse(int plantStart, int width, int height) {
-        super(plantStart, width, height);
+public class LifegivingCorpse extends AbstractPlants {
+    public LifegivingCorpse(WorldMap worldMap) {
+        super(worldMap);
     }
     @Override
-    public void GrassOnMapExtra(int amount, List<Vector2d> corpses) {
+    public void placePlants(int amount, List<Vector2d> corpses) {
         int currPlant = 0;
         while (currPlant < amount) {
             Vector2d newpos = choosePosition(corpses,3);
@@ -37,5 +37,4 @@ public class LifegivingCorpse extends EquatorPrefered {
         int y = random.nextInt(height);
         return new Vector2d(x, y);
     }
-
 }

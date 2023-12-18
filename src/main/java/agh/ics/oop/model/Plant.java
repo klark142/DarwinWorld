@@ -1,14 +1,17 @@
 package agh.ics.oop.model;
 
-public class Plant implements WorldElement{
+
+public class Plant {
     private final Vector2d position;
     public Plant(Vector2d position) {
         this.position = position;
     }
-    public Vector2d getPosition(){
+
+    public Vector2d getPosition() {
         return this.position;
     }
-    public String toString(){
+
+    public String toString() {
         return "*";
     }
 }

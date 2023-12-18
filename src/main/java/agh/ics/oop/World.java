@@ -1,7 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -22,21 +22,26 @@ public class World {
 //
 //    }
     public static void main(String[] args) {
-        Vector2d position1 = new Vector2d(0, 0);
-        Vector2d position2 = new Vector2d(0, 1);
 
-        java.util.List<Vector2d> corpses = java.util.List.of(position1, position2);
 
-//        WorldMap testMap = new EquatorPrefered(10, 10, 10);
-//        testMap.GrassOnMapExtra(10, corpses);
-//        System.out.println(testMap);
-//        for (int i = 0; i < 3; i++) {
-//            testMap.GrassOnMapExtra(5, corpses);
-//            System.out.println(testMap);
-//        }
+        Configuration configuration = new Configuration();
 
-        WorldMap testMap = new LifegivingCorpse(10,10,10);
-        testMap.GrassOnMapExtra(3, corpses);
-        System.out.println(testMap);
+        // place animals on the map
+        WorldMap worldMap = new WorldMap(configuration);
+        System.out.println(worldMap);
+        ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
+        worldMap.registerMapChangeListener(consoleMapDisplay);
+        worldMap.placeRandomAnimals(2);
+
+        // move by one day
+        worldMap.move();
+        worldMap.move();
+        worldMap.move();
+        for (List<Animal> animalList : worldMap.getAnimals().values()) {
+            for (Animal animal : animalList) {
+                System.out.println(animal.getGenotype());
+            }
+        }
+
     }
 }
