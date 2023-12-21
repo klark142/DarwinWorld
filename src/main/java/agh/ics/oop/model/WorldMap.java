@@ -1,16 +1,15 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.Configuration;
-import agh.ics.oop.MapSettings;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MapType;
+import agh.ics.oop.model.util.AnimalComparator;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WorldMap {
-    private Map<Vector2d, List<Animal>> animals;
+    private Map<Vector2d, TreeSet<Animal>> animals;
     private Map<Vector2d, Plant> plants;
     private int height;
     private int width;
@@ -18,21 +17,23 @@ public class WorldMap {
     private List<MapChangeListener> mapChangeListeners;
     private int plantsPerDay;
     private static int currentDay = 0;
+    private Configuration configuration;
 
 
     public WorldMap(Configuration configuration) {
+        this.configuration = configuration;
         this.animals = new HashMap<>();
         this.height = configuration.getHeight();
         this.width = configuration.getWidth();
         this.mapChangeListeners = new ArrayList<>();
 
-        if (configuration.getMapType() == MapType.EQUATOR_PREFERRED) {
+        if (getConfiguration().getMapType() == MapType.EQUATOR_PREFERRED) {
             this.plantsMap = new EquatorPreferred(this);
         } else {
             this.plantsMap = new LifegivingCorpse(this);
         }
 
-        plantsMap.placePlants(configuration.getStartPlantAmount(), new ArrayList<>());
+        plantsMap.placePlants(getConfiguration().getStartPlantAmount(), new ArrayList<>());
         this.plantsPerDay = configuration.getPlantsPerDay();
     }
 
@@ -40,11 +41,19 @@ public class WorldMap {
         return currentDay;
     }
 
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public Map<Vector2d, Plant> getPlants() {
+        return plants;
+    }
+
     public int getHeight() {
         return height;
     }
 
-    public Map<Vector2d, List<Animal>> getAnimals() {
+    public Map<Vector2d, TreeSet<Animal>> getAnimals() {
         return this.animals;
     }
 
@@ -111,7 +120,7 @@ public class WorldMap {
             int x = random.nextInt(getWidth());
             int y = random.nextInt(getHeight());
             Vector2d position = new Vector2d(x, y);
-            Animal animal = new Animal(position);
+            Animal animal = new Animal(this, position);
             placeAnimal(animal, position, true);
         }
     }
@@ -122,7 +131,7 @@ public class WorldMap {
             getAnimals().get(position).add(animal);
         } else {
             // if this position is not used
-            List<Animal> positionAnimals = new ArrayList<>();
+            TreeSet<Animal> positionAnimals = new TreeSet<>(new AnimalComparator());
             positionAnimals.add(animal);
             getAnimals().put(position, positionAnimals);
         }
@@ -135,7 +144,7 @@ public class WorldMap {
     public void move() {
         // moves all animals on the map by 1 position (1 simulation day)
         List<Animal> animalsToAdd = new ArrayList<>();
-        for (List<Animal> animalList : getAnimals().values()) {
+        for (TreeSet<Animal> animalList : getAnimals().values()) {
             for (Animal animalOld : animalList) {
                 MapDirection newDirection = MapDirection.getNextDirection(
                         animalOld.getAnimalDirection(),
@@ -153,8 +162,13 @@ public class WorldMap {
         }
 
 
+        removeDeadAnimals();
+        // move by 1
         removeOldAnimals();
         addNewAnimals(animalsToAdd);
+
+        feedAnimals();
+        breedAnimals();
         plantsMap.placePlants(this.plantsPerDay, new ArrayList<>());
         currentDay++;
     }
@@ -167,10 +181,10 @@ public class WorldMap {
     }
 
     public void removeOldAnimals() {
-        Iterator<Map.Entry<Vector2d, List<Animal>>> iterator = getAnimals().entrySet().iterator();
+        Iterator<Map.Entry<Vector2d, TreeSet<Animal>>> iterator = getAnimals().entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Vector2d, List<Animal>> entry = iterator.next();
-            List<Animal> animalList = entry.getValue();
+            Map.Entry<Vector2d, TreeSet<Animal>> entry = iterator.next();
+            TreeSet<Animal> animalList = entry.getValue();
 
             // iterate over the list of animals
             Iterator<Animal> animalIterator = animalList.iterator();
@@ -187,10 +201,72 @@ public class WorldMap {
         }
     }
 
-    public void removeAnimal(Animal animal) {
-        Vector2d position = animal.getPosition();
-        List<Animal> animalList = getAnimals().get(position);
-        animalList.remove(animal);
+    public void feedAnimals() {
+        Set<Plant> plantsToRemove = new HashSet<>();
+        for (Plant plant : getPlants().values()) {
+            TreeSet<Animal> animalsAtPosition = getAnimals().get(plant.getPosition());
+            if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
+                animalsAtPosition.first().feed(getConfiguration().energyPerPlant);
+                plantsToRemove.add(plant);
+            }
+        }
+
+        // delete eaten plants
+        Iterator<Map.Entry<Vector2d, Plant>> iterator = getPlants().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Vector2d, Plant> entry = iterator.next();
+            Plant plant = entry.getValue();
+
+            if (plantsToRemove.contains(plant)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public void breedAnimals() {
+        for (Vector2d position : getAnimals().keySet()) {
+            TreeSet<Animal> animalsAtPosition = getAnimals().get(position);
+
+            if (animalsAtPosition.size() < 2) {
+                continue;
+            }
+            // get two first animals to breed
+            Animal firstParent = animalsAtPosition.pollLast();
+            Animal secondParent = animalsAtPosition.pollLast();
+
+            // remove parents from main map
+            getAnimals().get(position).pollLast();
+            getAnimals().get(position).pollLast();
+
+            Animal child = firstParent.breed(secondParent);
+
+            if (child == null) {
+                placeAnimal(firstParent, firstParent.getPosition(), false);
+                placeAnimal(secondParent, secondParent.getPosition(), false);
+                continue;
+            };
+
+            // add parents to the main map
+            placeAnimal(firstParent, child.getPosition(), false);
+            placeAnimal(secondParent, child.getPosition(), false);
+            placeAnimal(child, child.getPosition(), true);
+        }
+    }
+
+
+    public void removeDeadAnimals() {
+        Iterator<Map.Entry<Vector2d, TreeSet<Animal>>> iterator = getAnimals().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Vector2d, TreeSet<Animal>> entry = iterator.next();
+            TreeSet<Animal> animalList = entry.getValue();
+
+            // iterate over the list of animals
+            animalList.removeIf(animal -> animal.getEnergyPoints() <= 0);
+
+            if (animalList.isEmpty()) {
+                iterator.remove();
+            }
+        }
     }
 
 }

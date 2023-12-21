@@ -5,12 +5,15 @@ import agh.ics.oop.model.enums.MapDirection;
 public class Animal {
     private Vector2d position;
     private MapDirection animalDirection;
+    private int age;
 
     private int energyPoints;
+    private int childrenNumber = 0;
     private Genotype genotype;
     private int height;
     private int width;
     private boolean toRemove;
+    private WorldMap worldMap;
 
     public Vector2d getPosition() {
         return position;
@@ -18,6 +21,22 @@ public class Animal {
 
     public int getEnergyPoints() {
         return energyPoints;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getChildrenNumber() {
+        return childrenNumber;
+    }
+
+    public void setEnergyPoints(int energyPoints) {
+        this.energyPoints = energyPoints;
+    }
+
+    public WorldMap getWorldMap() {
+        return worldMap;
     }
 
     public Genotype getGenotype() {
@@ -47,12 +66,27 @@ public class Animal {
         return toRemove;
     }
 
-    public Animal() {
+    public Animal(WorldMap worldMap) {
+        this.worldMap = worldMap;
         this.height = 10;
         this.width = 10;
         this.animalDirection = MapDirection.getRandomDirection();
         this.genotype = new Genotype();
         this.toRemove = false;
+        this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
+    }
+
+    // constructor for creating a new child
+    public Animal(WorldMap worldMap, Vector2d position, Genotype genotype,
+                  int energyPoints) {
+        this.worldMap = worldMap;
+        this.height = 10;
+        this.width = 10;
+        this.animalDirection = MapDirection.getRandomDirection();
+        this.genotype = genotype;
+        this.toRemove = false;
+        this.energyPoints = energyPoints;
+        this.position = position;
     }
 
     // constructor for copying animal objects
@@ -63,18 +97,23 @@ public class Animal {
         this.animalDirection = other.getAnimalDirection();
         this.genotype = other.getGenotype();
         this.toRemove = false;
+        this.worldMap = other.worldMap;
+        this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
     }
 
     public void setPosition(Vector2d position) {
         this.position = position;
     }
 
-    public Animal(Vector2d position) {
+    public Animal(WorldMap worldMap, Vector2d position) {
+        this.worldMap = worldMap;
         this.height = 10;
         this.width = 10;
         this.position = position;
         this.animalDirection = MapDirection.getRandomDirection();
         this.genotype = new Genotype();
+        this.toRemove = false;
+        this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
     }
     public String toString() {
         return switch (getAnimalDirection()) {
@@ -109,5 +148,36 @@ public class Animal {
         // moves always forward based on current animal's map direction
         Vector2d newPosition = newMovePosition(mapDirection);
         setPosition(newPosition);
+    }
+
+    public void feed(int energyPoints) {
+        setEnergyPoints(getEnergyPoints() + energyPoints);
+    }
+
+    public Animal breed(Animal other) {
+        if (!canBreed() || !other.canBreed()) return null;
+
+        int energyLoss = getWorldMap().getConfiguration().reproductionEnergyCost;
+
+        // create genome of the child
+        Genotype childGenotype = this.getGenotype().crossGenotypes(other.getGenotype(),
+                getEnergyPoints(), other.getEnergyPoints());
+
+        // decrease energy
+        setEnergyPoints(getEnergyPoints() - energyLoss);
+        other.setEnergyPoints(getEnergyPoints() - energyLoss);
+
+        // create child object
+        Animal child = new Animal(getWorldMap(), getPosition(), childGenotype,
+                energyLoss);
+
+        childrenNumber++;
+        other.childrenNumber++;
+
+        return child;
+    }
+
+    public boolean canBreed() {
+        return getEnergyPoints() >= getWorldMap().getConfiguration().minimalReproductionEnergy;
     }
 }
