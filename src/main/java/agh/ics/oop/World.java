@@ -2,8 +2,7 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Vector;
+import java.util.TreeSet;
 
 public class World {
     //    public static void main(String[] args) {
@@ -31,13 +30,14 @@ public class World {
         System.out.println(worldMap);
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         worldMap.registerMapChangeListener(consoleMapDisplay);
-        worldMap.placeRandomAnimals(2);
+        worldMap.placeRandomAnimals(5);
 
         // move by one day
-        worldMap.move();
-        worldMap.move();
-        worldMap.move();
-        for (List<Animal> animalList : worldMap.getAnimals().values()) {
+        for (int i = 0; i < 15; i++) {
+            worldMap.move();
+            System.out.println(worldMap.getPlants().values().size());
+        }
+        for (TreeSet<Animal> animalList : worldMap.getAnimals().values()) {
             for (Animal animal : animalList) {
                 System.out.println(animal.getGenotype());
             }
