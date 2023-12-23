@@ -37,7 +37,4 @@ public class LifegivingCorpse extends AbstractPlants {
         int y = random.nextInt(height);
         return new Vector2d(x, y);
     }
-
-
-
 }

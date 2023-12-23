@@ -1,5 +1,4 @@
 package agh.ics.oop.model;
-
 import agh.ics.oop.Configuration;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MapType;
