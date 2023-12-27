@@ -18,8 +18,9 @@ public class Genotype {
     public static void setGenotypeSize(int length) {
         genotypeSize = length;
     }
-    public Genotype() {
+    public Genotype(int genotypeSize) {
         this.genes = new ArrayList<>();
+        setGenotypeSize(genotypeSize);
         generateGenotype();
     }
 

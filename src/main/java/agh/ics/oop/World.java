@@ -5,21 +5,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class World {
-    //    public static void main(String[] args) {
-//        // basic settings
-//        int GENOTYPE_SIZE = 10;
-//        Genotype.setGenotypeSize(GENOTYPE_SIZE);
-//        Genotype genotype_first = new Genotype();
-//        System.out.println(genotype_first);
-//        Genotype genotype_second = new Genotype();
-//        System.out.println(genotype_second);
-//
-//        Genotype genotype_child = genotype_first.crossGenotypes(genotype_second,
-//                10, 20);
-//        System.out.println(genotype_child);
-//
-//
-//    }
     public static void main(String[] args) {
 
 
@@ -27,13 +12,12 @@ public class World {
 
         // place animals on the map
         WorldMap worldMap = new WorldMap(configuration);
-        System.out.println(worldMap);
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         worldMap.registerMapChangeListener(consoleMapDisplay);
         worldMap.placeRandomAnimals(10);
 
         // move by one day
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 25; i++) {
             worldMap.updateMap();
             System.out.println(worldMap.getStatistics());
         }

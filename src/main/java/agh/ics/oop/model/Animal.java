@@ -96,10 +96,10 @@ public class Animal {
 
     public Animal(WorldMap worldMap) {
         this.worldMap = worldMap;
-        this.height = 10;
-        this.width = 10;
+        this.height = worldMap.getConfiguration().getHeight();
+        this.width = worldMap.getConfiguration().getWidth();
         this.animalDirection = MapDirection.getRandomDirection();
-        this.genotype = new Genotype();
+        this.genotype = new Genotype(worldMap.getConfiguration().genotypeSize);
         this.toRemove = false;
         this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
     }
@@ -108,8 +108,8 @@ public class Animal {
     public Animal(WorldMap worldMap, Vector2d position, Genotype genotype,
                   int energyPoints) {
         this.worldMap = worldMap;
-        this.height = 10;
-        this.width = 10;
+        this.height = worldMap.getConfiguration().getHeight();
+        this.width = worldMap.getConfiguration().getWidth();
         this.animalDirection = MapDirection.getRandomDirection();
         this.genotype = genotype;
         this.toRemove = false;
@@ -138,7 +138,7 @@ public class Animal {
         this.width = worldMap.getConfiguration().getWidth();
         this.position = position;
         this.animalDirection = MapDirection.getRandomDirection();
-        this.genotype = new Genotype();
+        this.genotype = new Genotype(worldMap.getConfiguration().genotypeSize);
         this.toRemove = false;
         this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
     }
