@@ -9,7 +9,7 @@ public class Configuration {
     public int energyPerPlant = 3;
     public int startPlantAmount = 5;
     public int plantsPerDay = 2;
-    public int startAnimalAmount = 3;
+    public int startAnimalAmount = 5;
     public int startAnimalEnergy = 10;
     public int minimalReproductionEnergy = 2;
     public int reproductionEnergyCost = 3;

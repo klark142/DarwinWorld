@@ -30,12 +30,12 @@ public class World {
         System.out.println(worldMap);
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         worldMap.registerMapChangeListener(consoleMapDisplay);
-        worldMap.placeRandomAnimals(5);
+        worldMap.placeRandomAnimals(10);
 
         // move by one day
-        for (int i = 0; i < 15; i++) {
-            worldMap.move();
-            System.out.println(worldMap.getPlants().values().size());
+        for (int i = 0; i < 50; i++) {
+            worldMap.updateMap();
+            System.out.println(worldMap.getStatistics());
         }
         for (TreeSet<Animal> animalList : worldMap.getAnimals().values()) {
             for (Animal animal : animalList) {
