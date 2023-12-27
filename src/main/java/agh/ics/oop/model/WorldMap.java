@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 import agh.ics.oop.Configuration;
+import agh.ics.oop.Statistics;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MapType;
 import agh.ics.oop.model.util.AnimalComparator;
@@ -17,6 +18,8 @@ public class WorldMap {
     private int plantsPerDay;
     private static int currentDay = 0;
     private Configuration configuration;
+    private Statistics statistics;
+    private Set<Animal> deadAnimals;
 
 
     public WorldMap(Configuration configuration) {
@@ -34,10 +37,16 @@ public class WorldMap {
 
         plantsMap.placePlants(getConfiguration().getStartPlantAmount(), new ArrayList<>());
         this.plantsPerDay = configuration.getPlantsPerDay();
+        this.statistics = new Statistics(this);
+        this.deadAnimals = new HashSet<>();
     }
 
     public static int getCurrentDay() {
         return currentDay;
+    }
+
+    public Set<Animal> getDeadAnimals() {
+        return deadAnimals;
     }
 
     public Configuration getConfiguration() {
@@ -50,6 +59,9 @@ public class WorldMap {
 
     public int getHeight() {
         return height;
+    }
+    public Statistics getStatistics() {
+        return statistics;
     }
 
     public Map<Vector2d, TreeSet<Animal>> getAnimals() {
@@ -151,30 +163,28 @@ public class WorldMap {
 
                 animalOld.setToRemove(true);
                 Animal animalNew = new Animal(animalOld);
+                animalNew.setEnergyPoints(animalNew.getEnergyPoints() - 1);
                 animalNew.move(newDirection);
                 animalNew.setAnimalDirection(newDirection);
                 animalsToAdd.add(animalNew);
-//                mapChanged("Animal has just moved from " + animalOld.getPosition() + " " +
-//                        "to " + animalNew.getPosition());
-//                placeAnimal(animalNew, animalNew.getPosition());
             }
         }
 
-
-        removeDeadAnimals();
-        // move by 1
+        if (animalsToAdd.isEmpty()) {
+            throw  new RuntimeException("All animals are dead");
+        }
         removeOldAnimals();
         addNewAnimals(animalsToAdd);
+    }
 
-        feedAnimals();
-        breedAnimals();
+    private void addDailyPlants() {
         plantsMap.placePlants(this.plantsPerDay, new ArrayList<>());
-        currentDay++;
     }
 
     public void addNewAnimals(List<Animal> animals) {
         for (Animal animal : animals) {
             placeAnimal(animal, animal.getPosition(), false);
+            animal.setAge(animal.getAge() + 1);
         }
         mapChanged(currentDay + 1 + " day ended");
     }
@@ -237,10 +247,12 @@ public class WorldMap {
             getAnimals().get(position).pollLast();
             getAnimals().get(position).pollLast();
 
+            assert firstParent != null;
             Animal child = firstParent.breed(secondParent);
 
             if (child == null) {
                 placeAnimal(firstParent, firstParent.getPosition(), false);
+                assert secondParent != null;
                 placeAnimal(secondParent, secondParent.getPosition(), false);
                 continue;
             };
@@ -249,6 +261,7 @@ public class WorldMap {
             placeAnimal(firstParent, child.getPosition(), false);
             placeAnimal(secondParent, child.getPosition(), false);
             placeAnimal(child, child.getPosition(), true);
+            statistics.recordAnimalBirth();
         }
     }
 
@@ -260,7 +273,15 @@ public class WorldMap {
             TreeSet<Animal> animalList = entry.getValue();
 
             // iterate over the list of animals
-            animalList.removeIf(animal -> animal.getEnergyPoints() <= 0);
+            Iterator<Animal> animalIterator = animalList.iterator();
+            while (animalIterator.hasNext()) {
+                Animal animal = animalIterator.next();
+                if (animal.getEnergyPoints() <= 0) {
+                    animal.setDayOfDeath(currentDay);
+                    deadAnimals.add(animal);
+                    animalIterator.remove();
+                }
+            }
 
             if (animalList.isEmpty()) {
                 iterator.remove();
@@ -268,4 +289,67 @@ public class WorldMap {
         }
     }
 
+    // stats functions
+
+    public void updateFreeFields() {
+        int freeFields = 0;
+        for (int x = 0; x <= getWidth(); x++) {
+            for (int y = 0; y <= getHeight(); y++) {
+                Vector2d field = new Vector2d(x, y);
+                if (objectAt(field) == null) {
+                    freeFields++;
+                }
+            }
+        }
+        statistics.setFreeFields(freeFields);
+    }
+
+    public int getTotalAnimals() {
+        int totalAnimals = 0;
+        for (TreeSet<Animal> treeSet: getAnimals().values()) {
+            totalAnimals += treeSet.size();
+        }
+        return totalAnimals;
+    }
+
+    public int getTotalPlants() {
+        return getPlants().size();
+    }
+
+    // main daily function
+
+    public void updateMap() {
+        removeDeadAnimals();
+        checkAnimalsDead();
+        move();
+        feedAnimals();
+        breedAnimals();
+        addDailyPlants();
+        currentDay++;
+        updateStats();
+    }
+
+    private void updateStats() {
+        getStatistics().setTotalAnimals(getTotalAnimals());
+        getStatistics().setTotalPlants(getTotalPlants());
+        // TODO free fields debugging
+        updateFreeFields();
+        getStatistics().updateAverageEnergy();
+        getStatistics().updateAverageLifespan();
+        getStatistics().updateAverageChildren();
+        // TODO popular genotypes
+    }
+
+    private void checkAnimalsDead() {
+        boolean noAnimals = true;
+        for (TreeSet<Animal> treeSet : getAnimals().values()) {
+            if (!treeSet.isEmpty()) {
+                noAnimals = false;
+                break;
+            }
+        }
+        if (noAnimals) {
+            throw new RuntimeException("All Animals are dead");
+        }
+    }
 }

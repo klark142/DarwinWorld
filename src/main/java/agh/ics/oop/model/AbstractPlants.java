@@ -26,28 +26,29 @@ public abstract class AbstractPlants implements IPlants {
 
     @Override
     public void placePlants(int amount, List<Vector2d> corpses) {
-        int lower = (int)(height*0.5);
-        int upper = (int)(height*0.6);
-        int amount_equator = (int)(0.8*amount);
+        int lower = (int) (height * 0.5);
+        int upper = (int) (height * 0.6);
+        int amount_equator = (int) (0.8 * amount);
         int curr_plant = 0;
         while (curr_plant < amount_equator) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+            int x = random.nextInt(width + 1);
+            int y = (random.nextInt(upper - lower + 1)) + lower;
             Vector2d newpos = new Vector2d(x, y);
-            if (!isOccupied(newpos) & y>=lower & y<= upper) {
+            if (!isOccupied(newpos)) {
                 Plant newPlant = new Plant(newpos);
                 plants.put(newPlant.getPosition(), newPlant);
                 curr_plant ++;
             }
         }
         while (curr_plant < amount) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+            int x = random.nextInt(width + 1);
+            int y = random.nextBoolean() ? random.nextInt(lower) :
+                    (random.nextInt(height - upper + 1)) + upper;
             Vector2d newpos = new Vector2d(x, y);
-            if (!isOccupied(newpos) & (y < lower | y > upper)) {
+            if (!isOccupied(newpos)) {
                 Plant newPlant = new Plant(newpos);
                 plants.put(newPlant.getPosition(), newPlant);
-                curr_plant ++;
+                curr_plant++;
             }
         }
     }

@@ -2,14 +2,23 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.enums.MapDirection;
 
-public class Animal implements WorldElement {
+import java.util.HashSet;
+import java.util.Set;
+
+public class Animal {
+    // animal statistics
+    private Genotype genotype;
+    private int energyPoints;
+    private int eatenPlantsNumber;
+    private int childrenNumber;
+    private int age;
+    private int dayOfDeath;
+
+    // TODO descendants logic
+
+    // map related attributes
     private Vector2d position;
     private MapDirection animalDirection;
-    private int age;
-
-    private int energyPoints;
-    private int childrenNumber = 0;
-    private Genotype genotype;
     private int height;
     private int width;
     private boolean toRemove;
@@ -42,13 +51,24 @@ public class Animal implements WorldElement {
     public Genotype getGenotype() {
         return genotype;
     }
-
     public MapDirection getAnimalDirection() {
         return this.animalDirection;
     }
 
     public void setAnimalDirection(MapDirection animalDirection) {
         this.animalDirection = animalDirection;
+    }
+
+    public void setChildrenNumber(int childrenNumber) {
+        this.childrenNumber = childrenNumber;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
     }
 
     public int getHeight() {
@@ -65,6 +85,13 @@ public class Animal implements WorldElement {
 
     public boolean isToRemove() {
         return toRemove;
+    }
+    public void setPosition(Vector2d position) {
+        this.position = position;
+    }
+
+    public int getEatenPlantsNumber() {
+        return eatenPlantsNumber;
     }
 
     public Animal(WorldMap worldMap) {
@@ -92,24 +119,23 @@ public class Animal implements WorldElement {
 
     // constructor for copying animal objects
     public Animal(Animal other) {
-        this.height = 10;
-        this.width = 10;
+        this.worldMap = other.worldMap;
+        this.height = worldMap.getConfiguration().getHeight();
+        this.width = worldMap.getConfiguration().getWidth();
         this.position = other.getPosition();
         this.animalDirection = other.getAnimalDirection();
         this.genotype = other.getGenotype();
         this.toRemove = false;
-        this.worldMap = other.worldMap;
-        this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
-    }
-
-    public void setPosition(Vector2d position) {
-        this.position = position;
+        this.energyPoints = other.getEnergyPoints();
+        this.eatenPlantsNumber = other.getEatenPlantsNumber();
+        this.childrenNumber = other.getChildrenNumber();
+        this.age = other.getAge();
     }
 
     public Animal(WorldMap worldMap, Vector2d position) {
         this.worldMap = worldMap;
-        this.height = 10;
-        this.width = 10;
+        this.height = worldMap.getConfiguration().getHeight();
+        this.width = worldMap.getConfiguration().getWidth();
         this.position = position;
         this.animalDirection = MapDirection.getRandomDirection();
         this.genotype = new Genotype();
@@ -153,6 +179,7 @@ public class Animal implements WorldElement {
 
     public void feed(int energyPoints) {
         setEnergyPoints(getEnergyPoints() + energyPoints);
+        eatenPlantsNumber++;
     }
 
     public Animal breed(Animal other) {
