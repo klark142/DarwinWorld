@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -17,7 +19,7 @@ public class World {
         worldMap.placeRandomAnimals(10);
 
         // move by one day
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 10; i++) {
             worldMap.updateMap();
             System.out.println(worldMap.getStatistics());
         }
@@ -26,6 +28,7 @@ public class World {
                 System.out.println(animal.getGenotype());
             }
         }
-
+        System.out.println(Arrays.deepToString(worldMap.getArrayPlants()));
     }
+
 }

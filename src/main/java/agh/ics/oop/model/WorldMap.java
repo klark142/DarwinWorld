@@ -20,6 +20,7 @@ public class WorldMap {
     private Configuration configuration;
     private Statistics statistics;
     private Set<Animal> deadAnimals;
+    private int [][] arrayPlant;
 
 
     public WorldMap(Configuration configuration) {
@@ -31,14 +32,19 @@ public class WorldMap {
 
         if (getConfiguration().getMapType() == MapType.EQUATOR_PREFERRED) {
             this.plantsMap = new EquatorPreferred(this);
+            this.arrayPlant = EquatorPreferred.getPlantAmount();
         } else {
             this.plantsMap = new LifegivingCorpse(this);
+            this.arrayPlant = LifegivingCorpse.getPlantAmount();
         }
 
         plantsMap.placePlants(getConfiguration().getStartPlantAmount(), new ArrayList<>());
         this.plantsPerDay = configuration.getPlantsPerDay();
         this.statistics = new Statistics(this);
         this.deadAnimals = new HashSet<>();
+    }
+    public int [][]getArrayPlants(){
+        return arrayPlant;
     }
 
     public static int getCurrentDay() {
