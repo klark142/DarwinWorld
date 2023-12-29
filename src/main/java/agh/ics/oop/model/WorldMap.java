@@ -325,12 +325,12 @@ public class WorldMap {
     // main daily function
 
     public void updateMap() {
+        addDailyPlants();
         removeDeadAnimals();
         checkAnimalsDead();
         move();
         feedAnimals();
         breedAnimals();
-        addDailyPlants();
         currentDay++;
         updateStats();
     }
@@ -357,5 +357,15 @@ public class WorldMap {
         if (noAnimals) {
             throw new RuntimeException("All Animals are dead");
         }
+    }
+
+    public void updateMapFirstDay() {
+        removeDeadAnimals();
+        checkAnimalsDead();
+        move();
+        feedAnimals();
+        breedAnimals();
+        currentDay++;
+        updateStats();
     }
 }

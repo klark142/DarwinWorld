@@ -19,9 +19,14 @@ public class World {
         worldMap.placeRandomAnimals(10);
 
         // move by one day
-        for (int i = 0; i < 10; i++) {
-            worldMap.updateMap();
-            System.out.println(worldMap.getStatistics());
+        for (int i = 0; i < 2; i++) {
+            if (i == 0){
+                worldMap.updateMapFirstDay();
+            }
+            else {
+                worldMap.updateMap();
+                System.out.println(worldMap.getStatistics());
+            }
         }
         for (TreeSet<Animal> animalList : worldMap.getAnimals().values()) {
             for (Animal animal : animalList) {
