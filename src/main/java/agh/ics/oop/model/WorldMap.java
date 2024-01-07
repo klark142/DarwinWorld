@@ -20,6 +20,7 @@ public class WorldMap {
     private Configuration configuration;
     private Statistics statistics;
     private Set<Animal> deadAnimals;
+    private int [][] totalPlantsAmount;
 
 
     public WorldMap(Configuration configuration) {
@@ -31,14 +32,23 @@ public class WorldMap {
 
         if (getConfiguration().getMapType() == MapType.EQUATOR_PREFERRED) {
             this.plantsMap = new EquatorPreferred(this);
+            this.totalPlantsAmount = EquatorPreferred.getTotalPlantsAmount();
         } else {
             this.plantsMap = new LifegivingCorpse(this);
+            this.totalPlantsAmount = LifegivingCorpse.getTotalPlantsAmount();
         }
 
         plantsMap.placePlants(getConfiguration().getStartPlantAmount(), new ArrayList<>());
         this.plantsPerDay = configuration.getPlantsPerDay();
         this.statistics = new Statistics(this);
         this.deadAnimals = new HashSet<>();
+    }
+
+    public int[][] getTotalPlantsAmount() {
+        return totalPlantsAmount;
+    }
+    public void trackChosenAnimal(Animal animal) {
+        getStatistics().startTrackingAnimal(animal);
     }
 
     public static int getCurrentDay() {
@@ -153,13 +163,14 @@ public class WorldMap {
     }
 
     public void move() {
-        // moves all animals on the map by 1 position (1 simulation day)
         List<Animal> animalsToAdd = new ArrayList<>();
         for (TreeSet<Animal> animalList : getAnimals().values()) {
             for (Animal animalOld : animalList) {
+
                 MapDirection newDirection = MapDirection.getNextDirection(
                         animalOld.getAnimalDirection(),
                         animalOld.getGenotype().getNextGene(getCurrentDay()));
+                animalOld.setActivatedGene(newDirection);
 
                 animalOld.setToRemove(true);
                 Animal animalNew = new Animal(animalOld);
@@ -167,11 +178,15 @@ public class WorldMap {
                 animalNew.move(newDirection);
                 animalNew.setAnimalDirection(newDirection);
                 animalsToAdd.add(animalNew);
+                // check if animals was tracked
+                if (getStatistics().getChosenAnimal() == animalOld) {
+                    getStatistics().startTrackingAnimal(animalNew);
+                }
             }
         }
 
         if (animalsToAdd.isEmpty()) {
-            throw  new RuntimeException("All animals are dead");
+            throw new RuntimeException("All animals are dead");
         }
         removeOldAnimals();
         addNewAnimals(animalsToAdd);
@@ -186,7 +201,6 @@ public class WorldMap {
             placeAnimal(animal, animal.getPosition(), false);
             animal.setAge(animal.getAge() + 1);
         }
-        mapChanged(currentDay + 1 + " day ended");
     }
 
     public void removeOldAnimals() {
@@ -260,7 +274,7 @@ public class WorldMap {
             // add parents to the main map
             placeAnimal(firstParent, child.getPosition(), false);
             placeAnimal(secondParent, child.getPosition(), false);
-            placeAnimal(child, child.getPosition(), true);
+            placeAnimal(child, child.getPosition(), false);
             statistics.recordAnimalBirth();
         }
     }
@@ -279,6 +293,10 @@ public class WorldMap {
                 if (animal.getEnergyPoints() <= 0) {
                     animal.setDayOfDeath(currentDay);
                     deadAnimals.add(animal);
+
+                    // remove from most popular genotypes
+                    getStatistics().removeDeadAnimalFromGenotypes(animal);
+
                     animalIterator.remove();
                 }
             }
@@ -327,9 +345,11 @@ public class WorldMap {
         addDailyPlants();
         currentDay++;
         updateStats();
+        mapChanged(currentDay + " day ended");
     }
 
     private void updateStats() {
+        // general map stats
         getStatistics().setTotalAnimals(getTotalAnimals());
         getStatistics().setTotalPlants(getTotalPlants());
         // TODO free fields debugging
@@ -338,6 +358,13 @@ public class WorldMap {
         getStatistics().updateAverageLifespan();
         getStatistics().updateAverageChildren();
         // TODO popular genotypes
+        getStatistics().updatePopularGenotypes();
+
+        // specific animal stats
+    }
+
+    private void updateAnimalStats(Animal animal) {
+        animal.updateDescendantsNumber();
     }
 
     private void checkAnimalsDead() {

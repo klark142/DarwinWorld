@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Genotype {
     protected List<Byte> genes;
+    private Animal animal;
     // default genotype size value
     protected static int genotypeSize;
     private void generateGenotype() {
@@ -18,14 +19,23 @@ public class Genotype {
     public static void setGenotypeSize(int length) {
         genotypeSize = length;
     }
-    public Genotype(int genotypeSize) {
+    public Genotype(int genotypeSize, Animal animal) {
         this.genes = new ArrayList<>();
+        this.animal = animal;
         setGenotypeSize(genotypeSize);
         generateGenotype();
     }
 
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
+    }
+
     public Genotype(List<Byte> genotype) {
         this.genes = genotype;
+    }
+
+    public Animal getAnimal() {
+        return animal;
     }
 
     public byte getNextGene(int day) {
@@ -89,6 +99,23 @@ public class Genotype {
 
     public String toString() {
         return this.genes.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Genotype genotype = (Genotype) obj;
+        return Objects.equals(genes, genotype.genes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(genes);
     }
 
 }

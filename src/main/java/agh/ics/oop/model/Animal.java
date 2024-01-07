@@ -2,17 +2,22 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.enums.MapDirection;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Animal {
     // animal statistics
     private Genotype genotype;
+    private MapDirection activatedGene;
     private int energyPoints;
     private int eatenPlantsNumber;
     private int childrenNumber;
+    private int descendantsNumber;
     private int age;
     private int dayOfDeath;
+    private Set<Animal> children;
 
     // TODO descendants logic
 
@@ -34,6 +39,10 @@ public class Animal {
 
     public int getAge() {
         return age;
+    }
+
+    public void setActivatedGene(MapDirection activatedGene) {
+        this.activatedGene = activatedGene;
     }
 
     public int getChildrenNumber() {
@@ -94,14 +103,23 @@ public class Animal {
         return eatenPlantsNumber;
     }
 
+    public MapDirection getActivatedGene() {
+        return activatedGene;
+    }
+
+    public int getDayOfDeath() {
+        return dayOfDeath;
+    }
+
     public Animal(WorldMap worldMap) {
         this.worldMap = worldMap;
         this.height = worldMap.getConfiguration().getHeight();
         this.width = worldMap.getConfiguration().getWidth();
         this.animalDirection = MapDirection.getRandomDirection();
-        this.genotype = new Genotype(worldMap.getConfiguration().genotypeSize);
+        this.genotype = new Genotype(worldMap.getConfiguration().genotypeSize, this);
         this.toRemove = false;
         this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
+        this.children = new HashSet<>();
     }
 
     // constructor for creating a new child
@@ -115,6 +133,7 @@ public class Animal {
         this.toRemove = false;
         this.energyPoints = energyPoints;
         this.position = position;
+        this.children = new HashSet<>();
     }
 
     // constructor for copying animal objects
@@ -125,11 +144,15 @@ public class Animal {
         this.position = other.getPosition();
         this.animalDirection = other.getAnimalDirection();
         this.genotype = other.getGenotype();
+        this.genotype.setAnimal(other);
         this.toRemove = false;
         this.energyPoints = other.getEnergyPoints();
         this.eatenPlantsNumber = other.getEatenPlantsNumber();
         this.childrenNumber = other.getChildrenNumber();
         this.age = other.getAge();
+        this.children = other.children;
+        this.activatedGene = other.getActivatedGene();
+        this.descendantsNumber = other.getDescendantsNumber();
     }
 
     public Animal(WorldMap worldMap, Vector2d position) {
@@ -138,9 +161,14 @@ public class Animal {
         this.width = worldMap.getConfiguration().getWidth();
         this.position = position;
         this.animalDirection = MapDirection.getRandomDirection();
-        this.genotype = new Genotype(worldMap.getConfiguration().genotypeSize);
+        this.genotype = new Genotype(worldMap.getConfiguration().genotypeSize, this);
         this.toRemove = false;
         this.energyPoints = worldMap.getConfiguration().startAnimalEnergy;
+        this.children = new HashSet<>();
+    }
+
+    public void addChild(Animal child) {
+        this.children.add(child);
     }
     public String toString() {
         return switch (getAnimalDirection()) {
@@ -153,6 +181,22 @@ public class Animal {
             case WEST -> "W";
             case NORTH_WEST -> "NW";
         };
+    }
+
+    public int getDescendantsNumber() {
+        int count = 0;
+        for (Animal child : children) {
+            count += child.getDescendantsNumber() + 1;
+        }
+        return count;
+    }
+
+    public void updateDescendantsNumber() {
+        this.descendantsNumber = this.getDescendantsNumber();
+    }
+
+    public Set<Animal> getChildren() {
+        return children;
     }
 
     private Vector2d newMovePosition(MapDirection mapDirection) {
@@ -191,6 +235,7 @@ public class Animal {
         Genotype childGenotype = this.getGenotype().crossGenotypes(other.getGenotype(),
                 getEnergyPoints(), other.getEnergyPoints());
 
+
         // decrease energy
         setEnergyPoints(getEnergyPoints() - energyLoss);
         other.setEnergyPoints(getEnergyPoints() - energyLoss);
@@ -198,9 +243,13 @@ public class Animal {
         // create child object
         Animal child = new Animal(getWorldMap(), getPosition(), childGenotype,
                 energyLoss);
+        childGenotype.setAnimal(child);
 
+        // update children stats
         childrenNumber++;
+        addChild(child);
         other.childrenNumber++;
+        other.addChild(child);
 
         return child;
     }
