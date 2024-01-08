@@ -4,6 +4,10 @@ import agh.ics.oop.model.enums.BehaviourType;
 import agh.ics.oop.model.enums.MapType;
 
 public class Configuration {
+//    public void setWidth(int width) {
+//        this.width = width;
+//    }
+
     public int width = 10;
     public int height = 10;
     public int energyPerPlant = 3;
