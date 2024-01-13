@@ -14,28 +14,37 @@ public class World {
         Configuration configuration = new Configuration();
 
         // place animals on the map
-//        WorldMap worldMap = new WorldMap(configuration);
-//        ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
-//        worldMap.registerMapChangeListener(consoleMapDisplay);
-//        worldMap.placeRandomAnimals(10);
-//
-//        for (TreeSet<Animal> animalList : worldMap.getAnimals().values()) {
-//            for (Animal animal : animalList) {
-//                worldMap.trackChosenAnimal(animal);
-//                break;
-//            }
-//        }
-//            // move by one day
-//        for (int i = 0; i < 25; i++) {
-//            worldMap.updateMap();
-//            System.out.println(worldMap.getStatistics());
-//        }
-        List<Simulation> simulations = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            simulations.add(new Simulation(configuration, new WorldMap(configuration)));
+        WorldMap worldMap = new WorldMap(configuration);
+        ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
+        worldMap.registerMapChangeListener(consoleMapDisplay);
+        worldMap.placeRandomAnimals(10);
+
+        StaticsCSV staticsCSV = new StaticsCSV(worldMap);
+
+
+        for (TreeSet<Animal> animalList : worldMap.getAnimals().values()) {
+            for (Animal animal : animalList) {
+                worldMap.trackChosenAnimal(animal);
+                break;
+            }
         }
-        SimulationEngine simulationEngine = new SimulationEngine(simulations);
-        simulationEngine.runAsync();
-        simulationEngine.awaitSimulationsEnd();
+            // move by one day
+        for (int i = 0; i < 25; i++) {
+            worldMap.updateMap();
+            String dailyStatics = String.valueOf(worldMap.getStatistics());
+            staticsCSV.addNewData(dailyStatics);
+        }
+
+        staticsCSV.writeCSVToFile("C:\\Users\\Olek\\OneDrive\\Dokumenty\\test.csv");
+
+//        List<Simulation> simulations = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            simulations.add(new Simulation(configuration, new WorldMap(configuration)));
+//        }
+//        SimulationEngine simulationEngine = new SimulationEngine(simulations);
+//        simulationEngine.runAsync();
+//        simulationEngine.awaitSimulationsEnd();
+
+
     }
 }

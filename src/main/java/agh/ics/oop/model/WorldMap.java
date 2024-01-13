@@ -6,8 +6,9 @@ import agh.ics.oop.model.enums.MapType;
 import agh.ics.oop.model.util.AnimalComparator;
 import agh.ics.oop.model.util.MapVisualizer;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
-
 public class WorldMap {
     private Map<Vector2d, TreeSet<Animal>> animals;
     private Map<Vector2d, Plant> plants;
@@ -21,6 +22,7 @@ public class WorldMap {
     private Statistics statistics;
     private Set<Animal> deadAnimals;
     private int [][] totalPlantsAmount;
+
 
 
     public WorldMap(Configuration configuration) {
@@ -363,6 +365,7 @@ public class WorldMap {
         // specific animal stats
     }
 
+
     private void updateAnimalStats(Animal animal) {
         animal.updateDescendantsNumber();
     }
@@ -379,4 +382,6 @@ public class WorldMap {
             throw new RuntimeException("All Animals are dead");
         }
     }
+
+
 }

@@ -9,14 +9,14 @@ import com.sun.source.tree.Tree;
 import java.util.*;
 
 public class Statistics {
-    private int totalAnimals;
-    private int totalPlants;
-    private int freeFields;
+    private  int totalAnimals;
+    private  int totalPlants;
+    private  int freeFields;
     private Map<Genotype, Integer> genotypeCounts;
     private Genotype mostPopularGenotype;
-    private double averageEnergy;
-    private double averageLifespan;
-    private double averageChildren;
+    private  double averageEnergy;
+    private  double averageLifespan;
+    private  double averageChildren;
     private WorldMap worldMap;
 
     // TODO tracking chosen animal logic
@@ -24,16 +24,16 @@ public class Statistics {
     private boolean trackingChosenAnimal;
 
     // getters
-    public int getTotalAnimals() {
+    public  int getTotalAnimals() {
         return totalAnimals;
     }
 
 
-    public int getTotalPlants() {
+    public  int getTotalPlants() {
         return totalPlants;
     }
 
-    public int getFreeFields() {
+    public  int getFreeFields() {
         return freeFields;
     }
 
@@ -41,15 +41,15 @@ public class Statistics {
         return genotypeCounts;
     }
 
-    public double getAverageEnergy() {
+    public  double getAverageEnergy() {
         return averageEnergy;
     }
 
-    public double getAverageLifespan() {
+    public  double getAverageLifespan() {
         return averageLifespan;
     }
 
-    public double getAverageChildren() {
+    public  double getAverageChildren() {
         return averageChildren;
     }
 
@@ -269,5 +269,7 @@ public class Statistics {
 
         return sb.toString();
     }
+
+
 
 }
