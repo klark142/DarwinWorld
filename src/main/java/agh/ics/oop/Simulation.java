@@ -28,6 +28,7 @@ public class Simulation implements Runnable {
     public void run() {
         for (int i = 0; i < 5; i++) {
             this.map.updateMap();
+//            this.map.updateStaticsForFile();
 //            synchronized (System.out) {
 //                System.out.println(map.getStatistics());
 //            }
