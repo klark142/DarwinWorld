@@ -8,7 +8,7 @@ import java.util.*;
 
 public class World {
     public static void main(String[] args) throws InterruptedException {
-        Application.launch(SimulationApp.class, args);
+//        Application.launch(SimulationApp.class, args);
 //        Configuration configuration = new Configuration();
 //
 //        // place animals on the map
