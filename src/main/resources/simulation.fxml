@@ -44,7 +44,7 @@
         <ComboBox fx:id="mapTypeCombo" promptText="Wariant wzrostu roślin">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Normalny (preferowany równik)"/>
+                    <String fx:value="Normalny"/>
                     <String fx:value="Życiodajne truchła"/>
                 </FXCollections>
             </items>

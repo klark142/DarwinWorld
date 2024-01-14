@@ -9,7 +9,7 @@ public class EnumMapper {
 
     public static MapType mapStringToMapType(String value) {
         return switch (value) {
-            case "Normalny (preferowany równik)" -> MapType.EQUATOR_PREFERRED;
+            case "Normalny" -> MapType.EQUATOR_PREFERRED;
             case "Życiodajne truchła" -> MapType.LIFEGIVING_CORPSE;
             default -> throw new IllegalArgumentException("Unknown MapType: " + value);
         };
