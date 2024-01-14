@@ -8,7 +8,6 @@ import java.util.*;
 public class World {
     public static void main(String[] args) throws InterruptedException {
         Configuration configuration = new Configuration();
-        WorldMap worldMap = new WorldMap(configuration);
 
 
         // place animals on the map
