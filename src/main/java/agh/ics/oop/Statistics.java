@@ -254,13 +254,14 @@ public class Statistics {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Total Animals: ").append(totalAnimals).append("\n");
-        sb.append("Total Plants: ").append(totalPlants).append("\n");
-        sb.append("Free Fields: ").append(freeFields).append("\n");
-        sb.append("Most Popular Genotype: ").append(mostPopularGenotype).append("\n");
-        sb.append("Average Energy: ").append(averageEnergy).append("\n");
-        sb.append("Average Lifespan: ").append(averageLifespan).append("\n");
-        sb.append("Average Children: ").append(averageChildren).append("\n");
+        sb.append("Liczba wszystkich zwierząt: ").append(totalAnimals).append("\n");
+        sb.append("Liczba wszystkich roślin: ").append(totalPlants).append("\n");
+        sb.append("Wolne pola: ").append(freeFields).append("\n");
+        sb.append("Najpopularniejszy genotyp: ").append(mostPopularGenotype).append(
+                "\n");
+        sb.append("Średnia energia: ").append(averageEnergy).append("\n");
+        sb.append("Średnia długość życia: ").append(averageLifespan).append("\n");
+        sb.append("Średnia liczba dzieci: ").append(averageChildren).append("\n");
 
         return sb.toString();
     }
@@ -268,17 +269,20 @@ public class Statistics {
     public String animalTrackingToString() {
         StringBuilder sb = new StringBuilder();
         if (trackingChosenAnimal && chosenAnimal != null) {
-            sb.append("\nChosen Animal Tracking:\n");
-            sb.append("Genome: ").append(chosenAnimal.getGenotype().toString()).append("\n");
-            sb.append("Active Gene: ").append(chosenAnimal.getActivatedGene().toString()).append(
+            sb.append("\nŚledzenie wybranego zwierzęcia:\n");
+            sb.append("Genotyp: ").append(chosenAnimal.getGenotype().toString()).append(
                     "\n");
-            sb.append("Energy: ").append(chosenAnimal.getEnergyPoints()).append("\n");
-            sb.append("Plants Eaten: ").append(chosenAnimal.getEatenPlantsNumber()).append("\n");
-            sb.append("Number of Children: ").append(chosenAnimal.getChildrenNumber()).append("\n");
-            sb.append("Number of Descendants: ").append(chosenAnimal.getDescendantsNumber()).append("\n");
-            sb.append("Days Alive: ").append(chosenAnimal.getAge()).append("\n");
+            sb.append("Aktywny gen: ").append(chosenAnimal.getActivatedGene().toString()).append(
+                    "\n");
+            sb.append("Energia: ").append(chosenAnimal.getEnergyPoints()).append("\n");
+            sb.append("Zjedzone rośliny: ").append(chosenAnimal.getEatenPlantsNumber()).append("\n");
+            sb.append("Liczba dzieci: ").append(chosenAnimal.getChildrenNumber()).append(
+                    "\n");
+            sb.append("Liczba potomków: ").append(chosenAnimal.getDescendantsNumber()).append("\n");
+            sb.append("Długość życia: ").append(chosenAnimal.getAge()).append("\n");
             if (chosenAnimal.getDayOfDeath() != 0) {
-                sb.append("Day of Death: ").append(chosenAnimal.getDayOfDeath()).append("\n");
+                sb.append("Dzień śmierci: ").append(chosenAnimal.getDayOfDeath()).append(
+                        "\n");
             }
         }
         return sb.toString();

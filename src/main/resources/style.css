@@ -1,0 +1,59 @@
+.root {
+    -fx-padding: 20;
+    -fx-background-color: #f0f0f0;
+    -fx-font-family: Arial;
+}
+
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #5e9ca0;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.button:hover {
+    -fx-background-color: #3b7a57;
+}
+
+.VBox {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.HBox {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.combo-box {
+    -fx-pref-width: 200px;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.grid-pane {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+.border-pane {
+    -fx-background-color: #ffffff;
+}
+
+#saveAndStartHBox {
+    -fx-alignment: center;
+    -fx-padding: 10;
+    -fx-end-margin: 10;
+    -fx-start-margin: 10;
+}

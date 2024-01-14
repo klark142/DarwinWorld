@@ -106,7 +106,8 @@ public class SimulationPresenter implements MapChangeListener {
 
         Stage mapStage = new Stage();
         mapStage.setTitle("Map Window");
-        mapStage.setScene(new Scene(viewRoot));
+        Scene scene = new Scene(viewRoot);
+        mapStage.setScene(scene);
         mapStage.show();
 
         // run in separate thread

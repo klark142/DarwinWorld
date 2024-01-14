@@ -474,7 +474,7 @@ public class MapPresenter implements MapChangeListener {
     }
 
     private void showTrackingAnimalStats() {
-        statsAnimalLabel.setText("Animal Stats: " + worldMap.getStatistics().animalTrackingToString());
+        statsAnimalLabel.setText(worldMap.getStatistics().animalTrackingToString());
     }
 
     @FXML

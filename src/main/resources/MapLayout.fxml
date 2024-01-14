@@ -18,36 +18,50 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.ics.oop.presenter.MapPresenter">
+            fx:controller="agh.ics.oop.presenter.MapPresenter"
+            stylesheets="map_layout_style.css">
 
     <!-- Top Section -->
+    <top>
+        <VBox style="-fx-padding: 10 0 20 0;">
+            <Label fx:id="messageLabel" />
+            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" prefWidth="450" prefHeight="450"/>
+        </VBox>
+    </top>
+
     <!-- Center Section -->
     <center>
-        <VBox>
-            <Label fx:id="messageLabel"/>
-            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" prefWidth="450" prefHeight="450"/>
-            <Label fx:id="statsAnimalLabel"/>
-            <Button fx:id="stopTrackingButton" text="Stop Tracking Animal" onAction="#onStopTrackingClicked" visible="false"/>
-            <Button fx:id="showStatsButton" text="Show Statistics" onAction="#onShowStatsClicked"/>
-            <Button fx:id="hideStatsButton" text="Hide Statistics" onAction="#onHideStatsClicked" visible="false"/>
-            <Label fx:id="statsLabel" visible="false"/>
-<!--            genotype buttons-->
-            <Button fx:id="showGenotypeButton" text="Show Animals with Most Popular Genotype" onAction="#onShowGenotypeClicked" visible="false"/>
-            <Button fx:id="hideGenotypeButton" text="Hide" onAction="#onHideGenotypeClicked" visible="false"/>
-<!--            preferred cells buttons-->
-            <Button fx:id="showPreferredCellsButton" text="Show Preferred Cells" onAction="#onShowPreferredCellsClicked" visible="false"/>
-            <Button fx:id="hidePreferredCellsButton" text="Hide Preferred Cells" onAction="#onHidePreferredCellsClicked" visible="false"/>
-<!--            saving stats to a file-->
-            <Button fx:id="saveStatsButton" text="Save Stats to File" onAction="#onSaveStatsClicked" visible="false"/>
+        <HBox spacing="10" alignment="CENTER" style="-fx-font-size: 14px;">
+            <!--            animal tracking-->
+            <VBox prefWidth="400" spacing="10">
+                <Label fx:id="statsAnimalLabel" alignment="CENTER"/>
+                <Button fx:id="stopTrackingButton" text="Zakończ śledzenie zwierzęcia" onAction="#onStopTrackingClicked" visible="false"/>
+            </VBox>
 
+            <!--            simulation stats-->
+            <VBox prefWidth="500" spacing="10">
+                <Button fx:id="showStatsButton" text="Pokaż statystyki symulacji" onAction="#onShowStatsClicked"/>
+                <Button fx:id="hideStatsButton" text="Ukryj statystyki symulacji" onAction="#onHideStatsClicked" visible="false"/>
+                <Label fx:id="statsLabel" visible="false"/>
+            </VBox>
 
-        </VBox>
+            <VBox prefWidth="400" spacing="10">
+                <!--            genotype buttons-->
+                <Button fx:id="showGenotypeButton" text="Pokaż zwierzęta z najpopularniejszym genotypem" onAction="#onShowGenotypeClicked" visible="false"/>
+                <Button fx:id="hideGenotypeButton" text="Hide" onAction="#onHideGenotypeClicked" visible="false"/>
+                <!--            preferred cells buttons-->
+                <Button fx:id="showPreferredCellsButton" text="Pokaż pola preferowane przez rośliny" onAction="#onShowPreferredCellsClicked" visible="false"/>
+                <Button fx:id="hidePreferredCellsButton" text="Ukryj pola preferowane przez rośliny" onAction="#onHidePreferredCellsClicked" visible="false"/>
+                <!--            saving stats to a file-->
+                <Button fx:id="saveStatsButton" text="Zapisz statystyki symulacji do pliku" onAction="#onSaveStatsClicked" visible="false"/>
+            </VBox>
+        </HBox>
     </center>
     <bottom>
-        <VBox>
-            <Button fx:id="stopSimulationButton" text="Stop Simulation" onAction="#onStopSimulationClicked"/>
-            <Button fx:id="resumeSimulationButton" text="Resume Simulation" onAction="#onResumeSimulationClicked" visible="false"/>
-        </VBox>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 20 0;">
+            <Button fx:id="stopSimulationButton" text="Zatrzymaj symulacje" onAction="#onStopSimulationClicked"/>
+            <Button fx:id="resumeSimulationButton" text="Wznów symulacje" onAction="#onResumeSimulationClicked" visible="false"/>
+        </HBox>
     </bottom>
 
 

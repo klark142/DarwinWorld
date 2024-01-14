@@ -398,7 +398,7 @@ public class WorldMap {
         addDailyPlants();
         currentDay++;
         updateStats();
-        mapChanged(currentDay + " day ended");
+        mapChanged(currentDay + " dzień zakończony");
     }
 
     private void updateStats() {

@@ -18,7 +18,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+            fx:controller="agh.ics.oop.presenter.SimulationPresenter" stylesheets="@style.css">
 
 <!-- Top Section -->
 <top>
@@ -98,14 +98,12 @@
                 </FXCollections>
             </items>
         </ComboBox>
-<!--        <Label fx:id="messageLabel"/>-->
-<!--        <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER"/>-->
     </VBox>
 </center>
 
 <!-- Bottom Section -->
 <bottom>
-    <HBox>
+    <HBox fx:id="saveAndStartHBox" spacing="10">
         <Button fx:id="saveButton" text="Zapisz obecną konfigurację" onAction="#onSaveClicked"/>
         <Button text="Rozpocznij symulacje" onAction="#onSimulationStartClicked"/>
     </HBox>
