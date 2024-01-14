@@ -10,7 +10,7 @@ public class EnumMapper {
     public static MapType mapStringToMapType(String value) {
         return switch (value) {
             case "Normalny" -> MapType.EQUATOR_PREFERRED;
-            case "Życiodajne truchła" -> MapType.LIFEGIVING_CORPSE;
+            case "Zyciodajne truchla" -> MapType.LIFEGIVING_CORPSE;
             default -> throw new IllegalArgumentException("Unknown MapType: " + value);
         };
     }
@@ -18,7 +18,7 @@ public class EnumMapper {
     public static BehaviourType mapStringToBehaviourType(String value) {
         return switch (value) {
             case "Normalny" -> BehaviourType.NORMAL;
-            case "Nieco szaleństwa" -> BehaviourType.CRAZY;
+            case "Nieco szalenstwa" -> BehaviourType.CRAZY;
             default ->
                     throw new IllegalArgumentException("Unknown BehaviourType: " + value);
         };
