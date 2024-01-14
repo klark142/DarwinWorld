@@ -9,14 +9,14 @@ import com.sun.source.tree.Tree;
 import java.util.*;
 
 public class Statistics {
-    private  int totalAnimals;
-    private  int totalPlants;
-    private  int freeFields;
+    private int totalAnimals;
+    private int totalPlants;
+    private int freeFields;
     private Map<Genotype, Integer> genotypeCounts;
     private Genotype mostPopularGenotype;
-    private  double averageEnergy;
-    private  double averageLifespan;
-    private  double averageChildren;
+    private double averageEnergy;
+    private double averageLifespan;
+    private double averageChildren;
     private WorldMap worldMap;
 
     // TODO tracking chosen animal logic
@@ -24,16 +24,16 @@ public class Statistics {
     private boolean trackingChosenAnimal;
 
     // getters
-    public  int getTotalAnimals() {
+    public int getTotalAnimals() {
         return totalAnimals;
     }
 
 
-    public  int getTotalPlants() {
+    public int getTotalPlants() {
         return totalPlants;
     }
 
-    public  int getFreeFields() {
+    public int getFreeFields() {
         return freeFields;
     }
 
@@ -41,15 +41,15 @@ public class Statistics {
         return genotypeCounts;
     }
 
-    public  double getAverageEnergy() {
+    public double getAverageEnergy() {
         return averageEnergy;
     }
 
-    public  double getAverageLifespan() {
+    public double getAverageLifespan() {
         return averageLifespan;
     }
 
-    public  double getAverageChildren() {
+    public double getAverageChildren() {
         return averageChildren;
     }
 
@@ -240,6 +240,7 @@ public class Statistics {
 
         setAverageChildren((double) childrenSum / totalAnimals);
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -270,6 +271,23 @@ public class Statistics {
         return sb.toString();
     }
 
-
+    public String animalTrackingToString() {
+        StringBuilder sb = new StringBuilder();
+        if (trackingChosenAnimal && chosenAnimal != null) {
+            sb.append("\nChosen Animal Tracking:\n");
+            sb.append("Genome: ").append(chosenAnimal.getGenotype().toString()).append("\n");
+            sb.append("Active Gene: ").append(chosenAnimal.getActivatedGene().toString()).append(
+                    "\n");
+            sb.append("Energy: ").append(chosenAnimal.getEnergyPoints()).append("\n");
+            sb.append("Plants Eaten: ").append(chosenAnimal.getEatenPlantsNumber()).append("\n");
+            sb.append("Number of Children: ").append(chosenAnimal.getChildrenNumber()).append("\n");
+            sb.append("Number of Descendants: ").append(chosenAnimal.getDescendantsNumber()).append("\n");
+            sb.append("Days Alive: ").append(chosenAnimal.getAge()).append("\n");
+            if (chosenAnimal.getDayOfDeath() != 0) {
+                sb.append("Day of Death: ").append(chosenAnimal.getDayOfDeath()).append("\n");
+            }
+        }
+        return sb.toString();
+    }
 
 }

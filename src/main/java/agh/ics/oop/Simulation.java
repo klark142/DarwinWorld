@@ -15,19 +15,24 @@ public class Simulation implements Runnable {
         this.map = worldMap;
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         map.registerMapChangeListener(consoleMapDisplay);
-        map.placeRandomAnimals(10);
+        map.placeRandomAnimals(configuration.getStartAnimalAmount());
 
-        for (TreeSet<Animal> animalList : map.getAnimals().values()) {
-            for (Animal animal : animalList) {
-                map.trackChosenAnimal(animal);
-                break;
-            }
-        }
+//        for (TreeSet<Animal> animalList : map.getAnimals().values()) {
+//            for (Animal animal : animalList) {
+//                map.trackChosenAnimal(animal);
+//                break;
+//            }
+//        }
     }
 
     public void run() {
         for (int i = 0; i < 5; i++) {
             this.map.updateMap();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 //            this.map.updateStaticsForFile();
 //            synchronized (System.out) {
 //                System.out.println(map.getStatistics());
