@@ -35,7 +35,7 @@ public abstract class AbstractPlants implements IPlants {
         if (amount > freePlace) {
             amount = freePlace;
         }
-        int lower = (int) (height * 0.5);
+        int lower = (int) (height * 0.4);
         int upper = (int) (height * 0.6);
         int amount_equator = (int) (0.8 * amount);
         int curr_plant = 0;

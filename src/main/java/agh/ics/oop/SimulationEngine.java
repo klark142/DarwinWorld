@@ -8,6 +8,7 @@ public class SimulationEngine {
     private CountDownLatch latch;
     private ExecutorService executor;
     private List<Thread> threads;
+    private boolean isRunning = true;
     public SimulationEngine(List<Simulation> simulations) {
         this.simulations = simulations;
         this.latch = new CountDownLatch(simulations.size());

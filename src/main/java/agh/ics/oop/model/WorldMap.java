@@ -5,7 +5,9 @@ import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MapType;
 import agh.ics.oop.model.util.AnimalComparator;
 import agh.ics.oop.model.util.MapVisualizer;
+import javafx.util.Pair;
 
+import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -17,7 +19,7 @@ public class WorldMap {
     private IPlants plantsMap;
     private List<MapChangeListener> mapChangeListeners;
     private int plantsPerDay;
-    private static int currentDay = 0;
+    private int currentDay = 0;
     private Configuration configuration;
     private Statistics statistics;
     private Set<Animal> deadAnimals;
@@ -49,12 +51,61 @@ public class WorldMap {
     public int[][] getTotalPlantsAmount() {
         return totalPlantsAmount;
     }
+
+    public int getMaxPlantsNumber() {
+        int maxPlants = Integer.MIN_VALUE;
+        int [][] array = getTotalPlantsAmount();
+
+        for (int[] ints : array) {
+            for (int anInt : ints) {
+                if (anInt > maxPlants) {
+                    maxPlants = anInt;
+                }
+            }
+        }
+
+        return maxPlants;
+    }
+
+    public Set<Vector2d> getPreferredCells() {
+        int maxPlants = getMaxPlantsNumber();
+        int threshold = (int)(maxPlants * 0.7);
+        Set<Vector2d> preferredCells = new HashSet<>();
+        int [][] array = getTotalPlantsAmount();
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                if (array[j][i] >= threshold) {
+                    preferredCells.add(new Vector2d(i, j));
+                }
+            }
+        }
+        return preferredCells;
+    }
     public void trackChosenAnimal(Animal animal) {
         getStatistics().startTrackingAnimal(animal);
     }
 
-    public static int getCurrentDay() {
-        return currentDay;
+    public Pair<Integer, Integer> getEquatorRows() {
+        int lower = (int) (getHeight() * 0.4);
+        int upper = (int) (getHeight() * 0.6);
+
+        return new Pair<>(lower, upper);
+    }
+
+    public int getMaxEnergyPoints() {
+        int maxEnergy = Integer.MIN_VALUE;
+
+        for (TreeSet<Animal> treeSet : getAnimals().values()) {
+            Animal animal = treeSet.first();
+            if (animal.getEnergyPoints() > maxEnergy) {
+                maxEnergy = animal.getEnergyPoints();
+            }
+        }
+        return maxEnergy;
+    }
+
+    public int getCurrentDay() {
+        return this.currentDay;
     }
 
     public Set<Animal> getDeadAnimals() {
@@ -354,12 +405,10 @@ public class WorldMap {
         // general map stats
         getStatistics().setTotalAnimals(getTotalAnimals());
         getStatistics().setTotalPlants(getTotalPlants());
-        // TODO free fields debugging
         updateFreeFields();
         getStatistics().updateAverageEnergy();
         getStatistics().updateAverageLifespan();
         getStatistics().updateAverageChildren();
-        // TODO popular genotypes
         getStatistics().updatePopularGenotypes();
 
         // specific animal stats

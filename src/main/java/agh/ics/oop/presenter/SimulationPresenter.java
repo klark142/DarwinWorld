@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -41,6 +38,7 @@ import org.json.JSONObject;
 public class SimulationPresenter implements MapChangeListener {
     public Button saveButton;
     public Button loadButton;
+    public TextField refreshRateField;
     private WorldMap worldMap;
     @FXML
     public ComboBox mapTypeCombo;
@@ -70,6 +68,7 @@ public class SimulationPresenter implements MapChangeListener {
     private TextField maximumMutationAmountField;
     @FXML
     private TextField genotypeSizeField;
+    private boolean writeToCSV = false;
 
 
     @FXML
@@ -87,34 +86,34 @@ public class SimulationPresenter implements MapChangeListener {
         JSONObject jsonObject = convertInputToJSON();
         Configuration configuration = new Configuration(jsonObject);
 
-        // create simulation objects
-        List<Simulation> simulations = new ArrayList<>();
+        // Create new simulation objects
         WorldMap worldMap = new WorldMap(configuration);
         Simulation simulation = new Simulation(configuration, worldMap);
+        if (this.writeToCSV) {
+            simulation.setWriteToCSV(true);
+        }
+        List<Simulation> simulations = new ArrayList<>();
         simulations.add(simulation);
 
-        // open new window
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("MapLayout.fxml"));
+        // Open new window for each simulation
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("MapLayout.fxml"));
         BorderPane viewRoot = loader.load();
 
         MapPresenter mapPresenter = loader.getController();
+        mapPresenter.setSimulation(simulation);
         mapPresenter.setWorldMap(worldMap);
         worldMap.registerMapChangeListener(mapPresenter);
 
         Stage mapStage = new Stage();
         mapStage.setTitle("Map Window");
-        Scene mapScene = new Scene(viewRoot);
-        mapStage.setScene(mapScene);
+        mapStage.setScene(new Scene(viewRoot));
         mapStage.show();
 
-        // register listeners
-        worldMap.registerMapChangeListener(mapPresenter);
-        mapPresenter.setWorldMap(worldMap);
-
-        // run
-        SimulationEngine simulationEngine = new SimulationEngine(simulations);
-        simulationEngine.runAsync();
+        // run in separate thread
+        Thread simulationThread = new Thread(simulation::run);
+        simulationThread.start();
+//        SimulationEngine simulationEngine = new SimulationEngine(simulations);
+//        simulationEngine.runAsync();
     }
 
     public JSONObject convertInputToJSON() {
@@ -127,11 +126,12 @@ public class SimulationPresenter implements MapChangeListener {
         jsonObject.put("plantsPerDay", plantsPerDayField.getText());
         jsonObject.put("startAnimalAmount", startAnimalAmountField.getText());
         jsonObject.put("startAnimalEnergy", startAnimalEnergyField.getText());
-        jsonObject.put("minimalReproductionEnergy", widthField.getText());
-        jsonObject.put("reproductionEnergyCost", widthField.getText());
-        jsonObject.put("minimalMutationAmount", widthField.getText());
-        jsonObject.put("maximumMutationAmount", widthField.getText());
-        jsonObject.put("genotypeSize", widthField.getText());
+        jsonObject.put("minimalReproductionEnergy", minimalReproductionEnergyField.getText());
+        jsonObject.put("reproductionEnergyCost", reproductionEnergyCostField.getText());
+        jsonObject.put("minimalMutationAmount", minimalMutationAmountField.getText());
+        jsonObject.put("maximumMutationAmount", maximumMutationAmountField.getText());
+        jsonObject.put("genotypeSize", genotypeSizeField.getText());
+        jsonObject.put("refreshRate", refreshRateField.getText());
 
         // handle submit button action
         String selectedMapType = mapTypeCombo.getValue().toString();
@@ -197,6 +197,7 @@ public class SimulationPresenter implements MapChangeListener {
             minimalMutationAmountField.setText(jsonObject.optString("minimalMutationAmount", ""));
             maximumMutationAmountField.setText(jsonObject.optString("maximumMutationAmount", ""));
             genotypeSizeField.setText(jsonObject.optString("genotypeSize", ""));
+            refreshRateField.setText(jsonObject.optString("refreshRate", ""));
 
             // For ComboBoxes, you need to select the item that matches the value
             mapTypeCombo.getSelectionModel().select(jsonObject.optString("mapType"));

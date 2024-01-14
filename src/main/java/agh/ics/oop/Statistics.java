@@ -6,6 +6,8 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
 import com.sun.source.tree.Tree;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Statistics {
@@ -23,7 +25,15 @@ public class Statistics {
     private Animal chosenAnimal;
     private boolean trackingChosenAnimal;
 
+    // writing stats to CSV file
+    private ArrayList<String> fileStats = new ArrayList<>();
+
     // getters
+
+    public ArrayList<String> getFileStats() {
+        return fileStats;
+    }
+
     public int getTotalAnimals() {
         return totalAnimals;
     }
@@ -252,22 +262,6 @@ public class Statistics {
         sb.append("Average Lifespan: ").append(averageLifespan).append("\n");
         sb.append("Average Children: ").append(averageChildren).append("\n");
 
-        // TODO: Add chosen animal tracking information if applicable
-        if (trackingChosenAnimal && chosenAnimal != null) {
-            sb.append("\nChosen Animal Tracking:\n");
-            sb.append("Genome: ").append(chosenAnimal.getGenotype().toString()).append("\n");
-            sb.append("Active Gene: ").append(chosenAnimal.getActivatedGene().toString()).append(
-                    "\n");
-            sb.append("Energy: ").append(chosenAnimal.getEnergyPoints()).append("\n");
-            sb.append("Plants Eaten: ").append(chosenAnimal.getEatenPlantsNumber()).append("\n");
-            sb.append("Number of Children: ").append(chosenAnimal.getChildrenNumber()).append("\n");
-            sb.append("Number of Descendants: ").append(chosenAnimal.getDescendantsNumber()).append("\n");
-            sb.append("Days Alive: ").append(chosenAnimal.getAge()).append("\n");
-            if (chosenAnimal.getDayOfDeath() != 0) {
-                sb.append("Day of Death: ").append(chosenAnimal.getDayOfDeath()).append("\n");
-            }
-        }
-
         return sb.toString();
     }
 
@@ -288,6 +282,24 @@ public class Statistics {
             }
         }
         return sb.toString();
+    }
+
+    // handle writing stats to CSV file
+    public void addNewData (String newData) {
+        getFileStats().add(newData);
+    }
+
+    public String generateCSVData() {
+        return String.valueOf(getFileStats());
+    }
+
+    public void writeCSVToFile(String filePath) {
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write(generateCSVData());
+            System.out.println("CSV file created successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing CSV file: " + e.getMessage());
+        }
     }
 
 }

@@ -14,6 +14,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 
+<?import javafx.scene.control.TextArea?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
@@ -24,10 +25,31 @@
     <center>
         <VBox>
             <Label fx:id="messageLabel"/>
-            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER"/>
-            <Label fx:id="statsLabel"/>
+            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" prefWidth="450" prefHeight="450"/>
+            <Label fx:id="statsAnimalLabel"/>
             <Button fx:id="stopTrackingButton" text="Stop Tracking Animal" onAction="#onStopTrackingClicked" visible="false"/>
+            <Button fx:id="showStatsButton" text="Show Statistics" onAction="#onShowStatsClicked"/>
+            <Button fx:id="hideStatsButton" text="Hide Statistics" onAction="#onHideStatsClicked" visible="false"/>
+            <Label fx:id="statsLabel" visible="false"/>
+<!--            genotype buttons-->
+            <Button fx:id="showGenotypeButton" text="Show Animals with Most Popular Genotype" onAction="#onShowGenotypeClicked" visible="false"/>
+            <Button fx:id="hideGenotypeButton" text="Hide" onAction="#onHideGenotypeClicked" visible="false"/>
+<!--            preferred cells buttons-->
+            <Button fx:id="showPreferredCellsButton" text="Show Preferred Cells" onAction="#onShowPreferredCellsClicked" visible="false"/>
+            <Button fx:id="hidePreferredCellsButton" text="Hide Preferred Cells" onAction="#onHidePreferredCellsClicked" visible="false"/>
+<!--            saving stats to a file-->
+            <Button fx:id="saveStatsButton" text="Save Stats to File" onAction="#onSaveStatsClicked" visible="false"/>
+
+
         </VBox>
     </center>
+    <bottom>
+        <VBox>
+            <Button fx:id="stopSimulationButton" text="Stop Simulation" onAction="#onStopSimulationClicked"/>
+            <Button fx:id="resumeSimulationButton" text="Resume Simulation" onAction="#onResumeSimulationClicked" visible="false"/>
+        </VBox>
+    </bottom>
+
+
 
 </BorderPane>

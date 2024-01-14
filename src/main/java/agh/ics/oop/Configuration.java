@@ -28,6 +28,15 @@ public class Configuration {
     public MapType mapType = MapType.EQUATOR_PREFERRED;
     public BehaviourType animalBehaviourType = BehaviourType.NORMAL;
     public int genotypeSize = 10;
+    public int refreshRate;
+
+    public void setRefreshRate(int refreshRate) {
+        this.refreshRate = refreshRate;
+    }
+
+    public int getRefreshRate() {
+        return refreshRate;
+    }
 
     public int getPlantsPerDay() {
         return plantsPerDay;
@@ -146,14 +155,15 @@ public class Configuration {
         setHeight(jsonObject.getInt("height"));
         setEnergyPerPlant(jsonObject.getInt("energyPerPlant"));
         setStartPlantAmount(jsonObject.getInt("startPlantAmount"));
-        setHeight(jsonObject.getInt("plantsPerDay"));
-        setHeight(jsonObject.getInt("startAnimalAmount"));
-        setHeight(jsonObject.getInt("startAnimalEnergy"));
-        setHeight(jsonObject.getInt("minimalReproductionEnergy"));
-        setHeight(jsonObject.getInt("reproductionEnergyCost"));
-        setHeight(jsonObject.getInt("minimalMutationAmount"));
-        setHeight(jsonObject.getInt("maximumMutationAmount"));
-        setHeight(jsonObject.getInt("genotypeSize"));
+        setPlantsPerDay(jsonObject.getInt("plantsPerDay"));
+        setStartAnimalAmount(jsonObject.getInt("startAnimalAmount"));
+        setStartAnimalEnergy(jsonObject.getInt("startAnimalEnergy"));
+        setMinimalReproductionEnergy(jsonObject.getInt("minimalReproductionEnergy"));
+        setReproductionEnergyCost(jsonObject.getInt("reproductionEnergyCost"));
+        setMinimalMutationAmount(jsonObject.getInt("minimalMutationAmount"));
+        setMaximumMutationAmount(jsonObject.getInt("maximumMutationAmount"));
+        setGenotypeSize(jsonObject.getInt("genotypeSize"));
+        setRefreshRate(jsonObject.getInt("refreshRate"));
 
         // handle submit button action
         MapType mapType = EnumMapper.mapStringToMapType(jsonObject.getString("mapType"));
@@ -163,4 +173,6 @@ public class Configuration {
                 EnumMapper.mapStringToBehaviourType(jsonObject.getString("animalBehaviourType"));
         setAnimalBehaviourType(behaviourType);
     }
+
+
 }

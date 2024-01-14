@@ -14,6 +14,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 
+<?import javafx.scene.control.CheckBox?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
@@ -22,19 +23,59 @@
 <!-- Top Section -->
 <top>
     <VBox>
-        <Button fx:id="loadButton" text="Load Configuration" onAction="#onLoadClicked"/>
-        <TextField fx:id="widthField" promptText="Szerokość mapy"/>
-        <TextField fx:id="heightField" promptText="Wysokość mapy"/>
-        <TextField fx:id="energyPerPlantField" promptText="Energia dostarczana po zjedzeniu rośliny"/>
-        <TextField fx:id="startPlantAmountField" promptText="Początkowa liczba roślin"/>
-        <TextField fx:id="plantsPerDayField" promptText="Liczba roślin dodawanych po każdym dniu"/>
-        <TextField fx:id="startAnimalAmountField" promptText="Początkowa liczba zwierząt"/>
-        <TextField fx:id="startAnimalEnergyField" promptText="Początkowa energia zwierząt"/>
-        <TextField fx:id="minimalReproductionEnergyField" promptText="Energia potrzebna do rozmnażania"/>
-        <TextField fx:id="reproductionEnergyCostField" promptText="Energia rodziców zużywana by stworzyć potomka"/>
-        <TextField fx:id="minimalMutationAmountField" promptText="Minimalna liczba mutacji"/>
-        <TextField fx:id= "maximumMutationAmountField" promptText="Maksymalna liczba mutacji"/>
-        <TextField fx:id= "genotypeSizeField" promptText="Długość genomu zwierzaków"/>
+        <Button fx:id="loadButton" text="Wczytaj konfigurację z pliku" onAction="#onLoadClicked"/>
+        <HBox spacing="10">
+            <Label text="Szerokość mapy:"/>
+            <TextField fx:id="widthField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Wysokość mapy:"/>
+            <TextField fx:id="heightField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Energia dostarczana po zjedzeniu rośliny:"/>
+            <TextField fx:id="energyPerPlantField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Początkowa liczba roślin:"/>
+            <TextField fx:id="startPlantAmountField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Liczba roślin dodawanych po każdym dniu:"/>
+            <TextField fx:id="plantsPerDayField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Początkowa liczba zwierząt:"/>
+            <TextField fx:id="startAnimalAmountField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Początkowa energia zwierząt:"/>
+            <TextField fx:id="startAnimalEnergyField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Energia potrzebna do rozmnażania:"/>
+            <TextField fx:id="minimalReproductionEnergyField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Energia rodziców zużywana by stworzyć potomka:"/>
+            <TextField fx:id="reproductionEnergyCostField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Minimalna liczba mutacji:"/>
+            <TextField fx:id="minimalMutationAmountField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Maksymalna liczba mutacji:"/>
+            <TextField fx:id="maximumMutationAmountField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Długość genomu zwierzaków:"/>
+            <TextField fx:id="genotypeSizeField"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Częstotliwość odświeżania (czas trwania jednego dnia w milisekunach):"/>
+            <TextField fx:id="refreshRateField"/>
+        </HBox>
     </VBox>
 </top>
 
@@ -65,7 +106,7 @@
 <!-- Bottom Section -->
 <bottom>
     <HBox>
-        <Button fx:id="saveButton" text="Save Configuration" onAction="#onSaveClicked"/>
+        <Button fx:id="saveButton" text="Zapisz obecną konfigurację" onAction="#onSaveClicked"/>
         <Button text="Rozpocznij symulacje" onAction="#onSimulationStartClicked"/>
     </HBox>
 </bottom>
