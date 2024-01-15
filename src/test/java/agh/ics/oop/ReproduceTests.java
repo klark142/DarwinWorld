@@ -2,15 +2,20 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.WorldMap;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReproduceTests {
-    Configuration configuration = new Configuration();
-    WorldMap worldMap = new WorldMap(configuration);
+//    JSONObject jsonObject = new JSONObject();
+//    Configuration configuration = new Configuration(jsonObject);
+//    WorldMap worldMap = new WorldMap(configuration);
     @Test
     void sumEnergy(){
+        JSONObject jsonObject = new JSONObject();
+        Configuration configuration = new Configuration(jsonObject);
+        WorldMap worldMap = new WorldMap(configuration);
         Animal animal1 = new Animal(worldMap);
         Animal animal2 = new Animal(worldMap);
         if (animal1.canBreed() && animal2.canBreed()){

@@ -1,9 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.ConsoleMapDisplay;
-import agh.ics.oop.model.StaticsCSV;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
 
 import java.util.TreeSet;
 
@@ -76,6 +73,13 @@ public class Simulation implements Runnable {
 //    }
 
     public void run() {
+        try {
+            ConfigurationValidator.validate(configuration);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid configuration: " + e.getMessage());
+            System.exit(1);
+        }
+
         Statistics statistics = this.map.getStatistics();
         while (running) {
             if (paused) {

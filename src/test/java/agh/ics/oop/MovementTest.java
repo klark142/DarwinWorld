@@ -5,6 +5,7 @@ import agh.ics.oop.model.Genotype;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
 import agh.ics.oop.model.enums.MapDirection;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -15,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class MovementTest {
-    Configuration configuration = new Configuration();
+    JSONObject jsonObject = new JSONObject();
+    Configuration configuration = new Configuration(jsonObject);
     WorldMap worldMap = new WorldMap(configuration);
     @Test
     void upperBorder(){

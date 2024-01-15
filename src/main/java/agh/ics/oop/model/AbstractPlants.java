@@ -29,9 +29,12 @@ public abstract class AbstractPlants implements IPlants {
     @Override
     public void placePlants(int amount, List<Vector2d> corpses) {
         if (isFull(0, height)) {
-            return;
+            amount = 0;
         }
         int freePlace = freePlaces();
+        if (freePlace == 0){
+            amount = 0;
+        }
         if (amount > freePlace) {
             amount = freePlace;
         }
@@ -47,10 +50,17 @@ public abstract class AbstractPlants implements IPlants {
                 if (upper + 1 <= height) {
                     upper += 1;
                 }
+                else{
+                    amount_equator = 0;
+                }
             }
 
             int x = random.nextInt(width + 1);
-            int y = (random.nextInt(upper - lower + 1)) + lower;
+            int y = 1;
+            if ((upper - lower + 1) + lower > 1){
+                y = (random.nextInt(upper - lower + 1)) + lower;
+            }
+
             Vector2d newpos = new Vector2d(x, y);
             if (!isOccupied(newpos)) {
                 Plant newPlant = new Plant(newpos);
@@ -61,8 +71,16 @@ public abstract class AbstractPlants implements IPlants {
         }
         while (curr_plant < amount) {
             int x = random.nextInt(width + 1);
+            int height2 = height - upper + 1;
+            if (height2 <1){
+                height2 = 1;
+            }
+            if (lower == 0){
+                lower = 1;
+            }
             int y = random.nextBoolean() ? random.nextInt(lower) :
-                    (random.nextInt(height - upper + 1)) + upper;
+                    (random.nextInt(height2)) + upper;
+
             Vector2d newpos = new Vector2d(x, y);
             if (!isOccupied(newpos)) {
                 Plant newPlant = new Plant(newpos);
