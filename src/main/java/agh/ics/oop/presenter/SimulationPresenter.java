@@ -1,6 +1,7 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.Configuration;
+import agh.ics.oop.ConfigurationValidator;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.*;
@@ -82,39 +83,53 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     public void onSimulationStartClicked() throws IOException {
-        // convert user's input to json
-        JSONObject jsonObject = convertInputToJSON();
-        Configuration configuration = new Configuration(jsonObject);
+//        try {
+            // convert user's input to json
+            JSONObject jsonObject = convertInputToJSON();
+            Configuration configuration = new Configuration(jsonObject);
+//            ConfigurationValidator.validate(jsonObject);
 
-        // Create new simulation objects
-        WorldMap worldMap = new WorldMap(configuration);
-        Simulation simulation = new Simulation(configuration, worldMap);
-        if (this.writeToCSV) {
-            simulation.setWriteToCSV(true);
-        }
-        List<Simulation> simulations = new ArrayList<>();
-        simulations.add(simulation);
+            // Create new simulation objects
+            WorldMap worldMap = new WorldMap(configuration);
+            Simulation simulation = new Simulation(configuration, worldMap);
+            if (this.writeToCSV) {
+                simulation.setWriteToCSV(true);
+            }
+            List<Simulation> simulations = new ArrayList<>();
+            simulations.add(simulation);
 
-        // Open new window for each simulation
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("MapLayout.fxml"));
-        BorderPane viewRoot = loader.load();
+            // Open new window for each simulation
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("MapLayout.fxml"));
+            BorderPane viewRoot = loader.load();
 
-        MapPresenter mapPresenter = loader.getController();
-        mapPresenter.setSimulation(simulation);
-        mapPresenter.setWorldMap(worldMap);
-        worldMap.registerMapChangeListener(mapPresenter);
+            MapPresenter mapPresenter = loader.getController();
+            mapPresenter.setSimulation(simulation);
+            mapPresenter.setWorldMap(worldMap);
+            worldMap.registerMapChangeListener(mapPresenter);
 
-        Stage mapStage = new Stage();
-        mapStage.setTitle("Map Window");
-        Scene scene = new Scene(viewRoot);
-        mapStage.setScene(scene);
-        mapStage.show();
+            Stage mapStage = new Stage();
+            mapStage.setTitle("Map Window");
+            Scene scene = new Scene(viewRoot);
+            mapStage.setScene(scene);
+            mapStage.show();
 
-        // run in separate thread
-        Thread simulationThread = new Thread(simulation::run);
-        simulationThread.start();
+            // run in separate thread
+            Thread simulationThread = new Thread(simulation::run);
+            simulationThread.start();
 //        SimulationEngine simulationEngine = new SimulationEngine(simulations);
 //        simulationEngine.runAsync();
+        }
+//        catch (IllegalArgumentException e){
+//            showErrorAlert("Blad walidacji konfiguracji", e.getMessage());
+//        }
+//    }
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     public JSONObject convertInputToJSON() {

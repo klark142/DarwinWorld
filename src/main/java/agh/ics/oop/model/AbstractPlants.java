@@ -10,7 +10,7 @@ public abstract class AbstractPlants implements IPlants {
     protected Random random = new Random();
     protected int width;
     protected int height;
-    public static int [][] totalPlantsAmount;
+    public static int [][] totalPlantsAmount;  //shows which places are preffered by plants
     private WorldMap worldMap;
     public Map<Vector2d, Plant> getPlants() {
         return plants;
@@ -66,7 +66,7 @@ public abstract class AbstractPlants implements IPlants {
                 Plant newPlant = new Plant(newpos);
                 plants.put(newPlant.getPosition(), newPlant);
                 curr_plant ++;
-                totalPlantsAmount[y][x] += 1;
+                totalPlantsAmount[x][y] += 1;
             }
         }
         while (curr_plant < amount) {
@@ -87,7 +87,7 @@ public abstract class AbstractPlants implements IPlants {
                 Plant newPlant = new Plant(newpos);
                 plants.put(newPlant.getPosition(), newPlant);
                 curr_plant++;
-                totalPlantsAmount[y][x] += 1;
+                totalPlantsAmount[x][y] += 1;
             }
         }
     }
