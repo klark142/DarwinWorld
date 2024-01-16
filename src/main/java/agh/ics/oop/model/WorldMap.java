@@ -1,29 +1,25 @@
 package agh.ics.oop.model;
 import agh.ics.oop.Configuration;
 import agh.ics.oop.Statistics;
+import agh.ics.oop.model.enums.BehaviourType;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MapType;
 import agh.ics.oop.model.util.AnimalComparator;
 import agh.ics.oop.model.util.MapVisualizer;
 import javafx.util.Pair;
-
-import javax.swing.*;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 public class WorldMap {
-    private Map<Vector2d, TreeSet<Animal>> animals;
+    private final Map<Vector2d, TreeSet<Animal>> animals;
     private Map<Vector2d, Plant> plants;
-    private int height;
-    private int width;
-    private IPlants plantsMap;
-    private List<MapChangeListener> mapChangeListeners;
-    private int plantsPerDay;
+    private final int height;
+    private final int width;
+    private final IPlants plantsMap;
+    private final List<MapChangeListener> mapChangeListeners;
+    private final int plantsPerDay;
     private int currentDay = 0;
-    private Configuration configuration;
-    private Statistics statistics;
-    private Set<Animal> deadAnimals;
-    private int [][] totalPlantsAmount;
+    private final Configuration configuration;
+    private final Statistics statistics;
+    private final Set<Animal> deadAnimals;
 
 
 
@@ -36,10 +32,8 @@ public class WorldMap {
 
         if (getConfiguration().getMapType() == MapType.EQUATOR_PREFERRED) {
             this.plantsMap = new EquatorPreferred(this);
-            this.totalPlantsAmount = EquatorPreferred.getTotalPlantsAmount();
         } else {
             this.plantsMap = new LifegivingCorpse(this);
-            this.totalPlantsAmount = LifegivingCorpse.getTotalPlantsAmount();
         }
 
         plantsMap.placePlants(getConfiguration().getStartPlantAmount(), new ArrayList<>());
@@ -48,19 +42,14 @@ public class WorldMap {
         this.deadAnimals = new HashSet<>();
     }
 
-    public int[][] getTotalPlantsAmount() {
-        return totalPlantsAmount;
-    }
-
     public int getMaxPlantsNumber() {
+        Map<Vector2d, Integer> totalPlantsAmount = this.plantsMap.getTotalPlantsAmount();
         int maxPlants = Integer.MIN_VALUE;
-        int [][] array = getTotalPlantsAmount();
 
-        for (int[] ints : array) {
-            for (int anInt : ints) {
-                if (anInt > maxPlants) {
-                    maxPlants = anInt;
-                }
+        for (Vector2d pos : totalPlantsAmount.keySet()) {
+            int amount = totalPlantsAmount.get(pos);
+            if (amount > maxPlants) {
+                maxPlants = amount;
             }
         }
 
@@ -71,18 +60,17 @@ public class WorldMap {
         int maxPlants = getMaxPlantsNumber();
         int threshold = (int)(maxPlants * 0.7);
         Set<Vector2d> preferredCells = new HashSet<>();
-        int [][] array = getTotalPlantsAmount();
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[i].length; j++) {
-                if (array[j][i] >= threshold) {
-                    preferredCells.add(new Vector2d(i, j));
-                }
+        Map<Vector2d, Integer> totalPlantsAmount = this.plantsMap.getTotalPlantsAmount();
+
+        for (Vector2d pos : totalPlantsAmount.keySet()) {
+            int amount = totalPlantsAmount.get(pos);
+            if (amount >= threshold) {
+                preferredCells.add(pos);
             }
         }
+
+        System.out.println(preferredCells);
         return preferredCells;
-    }
-    public void trackChosenAnimal(Animal animal) {
-        getStatistics().startTrackingAnimal(animal);
     }
 
     public Pair<Integer, Integer> getEquatorRows() {
@@ -219,10 +207,15 @@ public class WorldMap {
         List<Animal> animalsToAdd = new ArrayList<>();
         for (TreeSet<Animal> animalList : getAnimals().values()) {
             for (Animal animalOld : animalList) {
+                byte gene;
+                if (configuration.getAnimalBehaviourType() == BehaviourType.NORMAL) {
+                    gene = animalOld.getGenotype().getNextGene(getCurrentDay());
+                } else {
+                    gene = animalOld.getGenotype().getNextGeneCrazy(getCurrentDay());
+                }
 
                 MapDirection newDirection = MapDirection.getNextDirection(
-                        animalOld.getAnimalDirection(),
-                        animalOld.getGenotype().getNextGene(getCurrentDay()));
+                        animalOld.getAnimalDirection(), gene);
                 animalOld.setActivatedGene(newDirection);
 
                 animalOld.setToRemove(true);
@@ -322,7 +315,7 @@ public class WorldMap {
                 assert secondParent != null;
                 placeAnimal(secondParent, secondParent.getPosition(), false);
                 continue;
-            };
+            }
 
             // add parents to the main map
             placeAnimal(firstParent, child.getPosition(), false);
@@ -414,11 +407,6 @@ public class WorldMap {
         // specific animal stats
     }
 
-
-    private void updateAnimalStats(Animal animal) {
-        animal.updateDescendantsNumber();
-    }
-
     private void checkAnimalsDead() {
         boolean noAnimals = true;
         for (TreeSet<Animal> treeSet : getAnimals().values()) {
@@ -431,6 +419,4 @@ public class WorldMap {
             throw new RuntimeException("All Animals are dead");
         }
     }
-
-
 }

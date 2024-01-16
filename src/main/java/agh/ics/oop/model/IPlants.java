@@ -9,4 +9,6 @@ public interface IPlants {
     public Plant objectAt(Vector2d position);
 
     Map<Vector2d, Plant> getPlants();
+
+    Map<Vector2d, Integer> getTotalPlantsAmount();
 }

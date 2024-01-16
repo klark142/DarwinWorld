@@ -2,7 +2,13 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.enums.BehaviourType;
 import agh.ics.oop.model.enums.MapType;
+import agh.ics.oop.presenter.SimulationPresenter;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class Configuration {
 //    public void setWidth(int width) {
@@ -10,8 +16,11 @@ public class Configuration {
 //    }
 
 
-    public Configuration(JSONObject jsonObject) {
-        loadFromJson(jsonObject);
+//    public Configuration(JSONObject jsonObject) {
+//        loadFromJson(jsonObject);
+//    }
+
+    public Configuration() {
     }
 
     public int width = 10;
@@ -150,29 +159,39 @@ public class Configuration {
         return animalBehaviourType;
     }
 
-    public void loadFromJson(JSONObject jsonObject) {
-        setWidth(jsonObject.getInt("width"));
-        setHeight(jsonObject.getInt("height"));
-        setEnergyPerPlant(jsonObject.getInt("energyPerPlant"));
-        setStartPlantAmount(jsonObject.getInt("startPlantAmount"));
-        setPlantsPerDay(jsonObject.getInt("plantsPerDay"));
-        setStartAnimalAmount(jsonObject.getInt("startAnimalAmount"));
-        setStartAnimalEnergy(jsonObject.getInt("startAnimalEnergy"));
-        setMinimalReproductionEnergy(jsonObject.getInt("minimalReproductionEnergy"));
-        setReproductionEnergyCost(jsonObject.getInt("reproductionEnergyCost"));
-        setMinimalMutationAmount(jsonObject.getInt("minimalMutationAmount"));
-        setMaximumMutationAmount(jsonObject.getInt("maximumMutationAmount"));
-        setGenotypeSize(jsonObject.getInt("genotypeSize"));
-        setRefreshRate(jsonObject.getInt("refreshRate"));
+    public void loadFromJson(JSONObject jsonObject, SimulationPresenter simulationPresenter) {
+        try {
+            setWidth(jsonObject.getInt("width"));
+            setHeight(jsonObject.getInt("height"));
+            setEnergyPerPlant(jsonObject.getInt("energyPerPlant"));
+            setStartPlantAmount(jsonObject.getInt("startPlantAmount"));
+            setPlantsPerDay(jsonObject.getInt("plantsPerDay"));
+            setStartAnimalAmount(jsonObject.getInt("startAnimalAmount"));
+            setStartAnimalEnergy(jsonObject.getInt("startAnimalEnergy"));
+            setMinimalReproductionEnergy(jsonObject.getInt("minimalReproductionEnergy"));
+            setReproductionEnergyCost(jsonObject.getInt("reproductionEnergyCost"));
+            setMinimalMutationAmount(jsonObject.getInt("minimalMutationAmount"));
+            setMaximumMutationAmount(jsonObject.getInt("maximumMutationAmount"));
+            setGenotypeSize(jsonObject.getInt("genotypeSize"));
+            setRefreshRate(jsonObject.getInt("refreshRate"));
 
-        // handle submit button action
-        MapType mapType = EnumMapper.mapStringToMapType(jsonObject.getString("mapType"));
-        setMapType(mapType);
+            MapType mapType = EnumMapper.mapStringToMapType(jsonObject.getString("mapType"));
+            setMapType(mapType);
 
-        BehaviourType behaviourType =
-                EnumMapper.mapStringToBehaviourType(jsonObject.getString("animalBehaviourType"));
-        setAnimalBehaviourType(behaviourType);
+            BehaviourType behaviourType = EnumMapper.mapStringToBehaviourType(jsonObject.getString("animalBehaviourType"));
+            setAnimalBehaviourType(behaviourType);
+//        } catch (JSONException e) {
+//            simulationPresenter.handleJsonException(e);
+        } catch (Exception e) {
+            throw new JSONException(e.toString());
+        }
     }
+
+    private void handleOtherException(Exception e) {
+        System.out.println("Error: " + e.getMessage());
+    }
+
+
 
 
 }

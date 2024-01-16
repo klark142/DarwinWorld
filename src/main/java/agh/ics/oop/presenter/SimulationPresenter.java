@@ -33,6 +33,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SimulationPresenter implements MapChangeListener {
@@ -82,10 +84,31 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     public void onSimulationStartClicked() throws IOException {
-        // convert user's input to json
-        JSONObject jsonObject = convertInputToJSON();
-        Configuration configuration = new Configuration(jsonObject);
+        Configuration configuration = null;
+        try {
+            JSONObject jsonObject = convertInputToJSON();
+            configuration = new Configuration();
+            configuration.loadFromJson(jsonObject, this);
+        } catch (JSONException e) {
+            handleJsonException(e);
+            return;
+        }
 
+        startSimulation(configuration);
+    }
+
+    public void handleJsonException(JSONException e) throws IOException {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("JSON Parsing Error");
+            alert.setHeaderText("Error in Configuration Data");
+            alert.setContentText("Wystąpił błąd podczas wpisywania parametrów " +
+                    "symulacji: " + e.getMessage());
+            alert.showAndWait();
+        });
+    }
+
+    private void startSimulation(Configuration configuration) throws IOException {
         // Create new simulation objects
         WorldMap worldMap = new WorldMap(configuration);
         Simulation simulation = new Simulation(configuration, worldMap);
@@ -113,8 +136,6 @@ public class SimulationPresenter implements MapChangeListener {
         // run in separate thread
         Thread simulationThread = new Thread(simulation::run);
         simulationThread.start();
-//        SimulationEngine simulationEngine = new SimulationEngine(simulations);
-//        simulationEngine.runAsync();
     }
 
     public JSONObject convertInputToJSON() {
@@ -150,13 +171,13 @@ public class SimulationPresenter implements MapChangeListener {
                 new FileChooser.ExtensionFilter("JSON Files", "*.json"),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
         );
-        File file = fileChooser.showSaveDialog(null); // Replace 'null' with a reference to your Stage if available
+        File file = fileChooser.showSaveDialog(null);
 
         if (file != null) {
             try (FileWriter fileWriter = new FileWriter(file)) {
-                fileWriter.write(jsonObject.toString(4)); // Indentation for readability
+                fileWriter.write(jsonObject.toString(4));
             } catch (IOException e) {
-                e.printStackTrace(); // Handle exception
+                e.printStackTrace();
             }
         }
     }
@@ -171,14 +192,14 @@ public class SimulationPresenter implements MapChangeListener {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Configuration File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-        File file = fileChooser.showOpenDialog(null); // Replace 'null' with a reference to your Stage if available
+        File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
             try {
                 String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
                 return new JSONObject(content);
             } catch (Exception e) {
-                e.printStackTrace(); // Handle exception
+                e.printStackTrace();
             }
         }
         return null;

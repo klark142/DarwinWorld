@@ -97,9 +97,16 @@ public class Genotype {
         return new Genotype(childGenotype);
     }
 
+    @Override
     public String toString() {
-        return this.genes.toString();
+        StringBuilder sb = new StringBuilder();
+        for (Byte gene : genes) {
+            sb.append(gene).append(" ");
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -2,7 +2,6 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.ConsoleMapDisplay;
-import agh.ics.oop.model.StaticsCSV;
 import agh.ics.oop.model.WorldMap;
 
 import java.util.TreeSet;
@@ -90,7 +89,7 @@ public class Simulation implements Runnable {
             }
 
             this.map.updateMap();
-            String dailyStats = String.valueOf(this.map.getStatistics());
+            String dailyStats = String.valueOf(this.map.getStatistics().toStringCSV());
             statistics.addNewData(dailyStats);
 
             try {

@@ -266,6 +266,12 @@ public class Statistics {
         return sb.toString();
     }
 
+    public String toStringCSV() {
+        return totalAnimals + "," + totalPlants + "," + freeFields + "," +
+                mostPopularGenotype + "," + averageEnergy + "," +
+                averageLifespan + "," + averageChildren;
+    }
+
     public String animalTrackingToString() {
         StringBuilder sb = new StringBuilder();
         if (trackingChosenAnimal && chosenAnimal != null) {
@@ -294,11 +300,14 @@ public class Statistics {
     }
 
     public String generateCSVData() {
-        return String.valueOf(getFileStats());
+        return String.join("\n", getFileStats());
     }
 
     public void writeCSVToFile(String filePath) {
         try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write("Liczba zwierząt,Liczba rośłin,Wolne Pola,Najbardziej " +
+                    "popularny genotyp,Średnia energia,Średnia długość życia,Średnia " +
+                    "liczba dzieci\n");
             writer.write(generateCSVData());
             System.out.println("CSV file created successfully.");
         } catch (IOException e) {

@@ -10,7 +10,7 @@ public abstract class AbstractPlants implements IPlants {
     protected Random random = new Random();
     protected int width;
     protected int height;
-    public static int [][] totalPlantsAmount;
+    protected Map<Vector2d, Integer> totalPlantsAmount;
     private WorldMap worldMap;
     public Map<Vector2d, Plant> getPlants() {
         return plants;
@@ -23,7 +23,7 @@ public abstract class AbstractPlants implements IPlants {
         this.worldMap = worldMap;
         this.height = getWorldMap().getHeight();
         this.width = getWorldMap().getWidth();
-        totalPlantsAmount = new int[width + 1][height + 1];
+        this.totalPlantsAmount = new HashMap<>();
     }
 
     @Override
@@ -56,7 +56,10 @@ public abstract class AbstractPlants implements IPlants {
                 Plant newPlant = new Plant(newpos);
                 plants.put(newPlant.getPosition(), newPlant);
                 curr_plant ++;
-                totalPlantsAmount[y][x] += 1;
+
+                // updating total plants amount
+                int currentCount = totalPlantsAmount.getOrDefault(newpos, 0);
+                totalPlantsAmount.put(newpos, currentCount + 1);
             }
         }
         while (curr_plant < amount) {
@@ -68,7 +71,10 @@ public abstract class AbstractPlants implements IPlants {
                 Plant newPlant = new Plant(newpos);
                 plants.put(newPlant.getPosition(), newPlant);
                 curr_plant++;
-                totalPlantsAmount[y][x] += 1;
+
+                // updating total plants amount
+                int currentCount = totalPlantsAmount.getOrDefault(newpos, 0);
+                totalPlantsAmount.put(newpos, currentCount + 1);
             }
         }
     }
@@ -101,10 +107,6 @@ public abstract class AbstractPlants implements IPlants {
     @Override
     public boolean isOccupied(Vector2d position) {
         return objectAt(position) != null;
-    }
-
-    public static int[][] getTotalPlantsAmount() {
-        return totalPlantsAmount;
     }
 
     @Override

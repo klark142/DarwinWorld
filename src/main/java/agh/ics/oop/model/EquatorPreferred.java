@@ -9,4 +9,8 @@ public class EquatorPreferred extends AbstractPlants {
     public EquatorPreferred(WorldMap worldMap) {
         super(worldMap);
     }
+
+    public Map<Vector2d, Integer> getTotalPlantsAmount() {
+        return this.totalPlantsAmount;
+    }
 }

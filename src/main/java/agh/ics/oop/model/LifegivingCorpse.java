@@ -18,6 +18,10 @@ public class LifegivingCorpse extends AbstractPlants {
                 Plant newGrass = new Plant(newpos);
                 plants.put(newGrass.getPosition(), newGrass);
                 currPlant++;
+
+                // updating total plants amount
+                int currentCount = totalPlantsAmount.getOrDefault(newpos, 0);
+                totalPlantsAmount.put(newpos, currentCount + 1);
             }
         }
     }
@@ -36,5 +40,9 @@ public class LifegivingCorpse extends AbstractPlants {
         int x = random.nextInt(width);
         int y = random.nextInt(height);
         return new Vector2d(x, y);
+    }
+
+    public Map<Vector2d, Integer> getTotalPlantsAmount() {
+        return this.totalPlantsAmount;
     }
 }
